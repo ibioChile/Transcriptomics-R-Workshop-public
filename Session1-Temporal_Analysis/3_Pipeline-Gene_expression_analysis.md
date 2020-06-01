@@ -151,7 +151,7 @@ dgList
     ## AT1G01040 AT1G01040
     ## 32828 more rows ...
 
-A more detailed view on $samples will show you that they are grouped, as
+A more detailed view in $samples will show you that they are grouped, as
 expected.
 
 ``` r
@@ -352,7 +352,7 @@ x\(samples\)norm.factors. For this dataset the effect of
 TMM-normalisation is mild, as evident in the magnitude of the scaling
 factors, which are all relatively close to 1.
 
-More info on this command:
+More info using this command:
 
 ``` r
 ?calcNormFactors
@@ -364,7 +364,7 @@ We will create a new edgeR object with the normalization
 dgList2 <- calcNormFactors(dgList, method="TMM")
 ```
 
-Now let’s compare the samples on both variables
+Now let’s compare the samples in both variables
 
 ``` r
 head(dgList$samples)
@@ -493,7 +493,7 @@ hist(cpmCounts[,"t0.r2"],col="lightblue", main="D. cpm+log2+pseudocounts")
 
 <img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig3-1.png" style="display: block; margin: auto;" />
 
-Take a look at the peak at zero, which is lost on the Log2 graph.
+Take a look at the peak at zero, which is lost in the Log2 graph.
 
 ## 5\. Gene filtering
 
@@ -598,7 +598,7 @@ plot. The following lines produce a density of log-CPM values for (A)
 raw pre-filtered data and (B) post-filtered data for each sample.
 
 Dotted vertical lines mark the log-CPM threshold that we use (cpm \>1).
-Samples are colored by time as it is represented on the legend.
+Samples are colored by time as it is represented in the legend.
 
 ``` r
 nsamples <- ncol(dgList)
@@ -728,7 +728,7 @@ convert the counts to log-cpm and pass these to the limma plotMDS
 function. There, distance between each pair of samples (columns) is the
 root-mean-square deviation (Euclidean distance) for the top genes.
 
-Distances on the plot can be interpreted as leading log2-fold-change,
+Distances in the plot can be interpreted as leading log2-fold-change,
 meaning the typical (root-mean-square) log2-fold-change between the
 samples for the genes that distinguish those samples.
 
@@ -1016,7 +1016,7 @@ plot(fit$BIC)
 
 <img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig11-1.png" style="display: block; margin: auto;" />
 
-Classification vector that we could use on other plots, like PCA (next
+Classification vector that we could use in other plots, like PCA (next
 Sesion)
 
 ``` r
@@ -1075,7 +1075,7 @@ cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
 
 Note that sample clustering is different when using pseudocounts or cpm.
 The distance between samples is sensible to the kind of data that you
-use and pseudocounts are different than cpm, as you see on the panel C
+use and pseudocounts are different than cpm, as you see in panels C
 and D of the first graph of data transformation section. Some people do
 prefer to use pseudocounts but the correct way is to use cpm
 (<https://www.biostars.org/p/165619/>).
@@ -1118,7 +1118,7 @@ length(design.matrix[1,]) #10 factors
     ## [1] 10
 
 Detail of factors and assigned samples: 30 rows for 30 samples. You can
-see a number “1” on the corresponding replicates of each sample. Note
+see a number “1” in the corresponding replicates of each sample. Note
 that **dgList3$samples$group0** is not present. As a time series, all
 factors will be compared against time0.
 
@@ -1259,7 +1259,7 @@ design.matrix # factors
 Another model option is to use **model.matrix(0\~ +
 dgList3$samples$group)**, but that’s not a time series analysis. That’s
 a matrix for paired comparisons (ie, control vs treatment) like will be
-used on next Session.
+used in next Session.
 
 A key strength of limma’s linear modelling approach, is the ability
 accommodate arbitrary experimental complexity. Simple designs, such cell
@@ -1399,7 +1399,7 @@ only a numerical significance… a confidence that two numbers are
 sufficiently different considering a distribution model. However, an
 important concept to keep in mind is the biological significance: having
 twice the concentration of transcripts (2X) is a starting point to
-filter out genes without a real impact on the phenotype. Of course,
+filter out genes without a real impact over the phenotype. Of course,
 there are some genes that with low increments will produce big changes.
 My advice is to fisrt evaluate final numbers of selected genes with the
 standard cutoff. This because downstream analysis don’t work well with
@@ -1608,7 +1608,7 @@ names(which(geneClust == 2))
     ## [43] "ATMG00020" "ATCG00270" "ATCG00900" "ATCG01240" "AT2G01020" "AT3G41979"
     ## [49] "AT4G22495" "AT4G22505" "AT4G22475" "AT4G22485"
 
-To know the number of genes on each cluster:
+To know the number of genes in each cluster:
 
 ``` r
 length(names(which(geneClust == 1)))
@@ -1649,7 +1649,7 @@ will use cpm data.
 scaledata <- cpmCounts.select
 ```
 
-We need a function to obtain the mean expression on each sample of a
+We need a function to obtain the mean expression in each sample of a
 desired cluster:
 
 ``` r

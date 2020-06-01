@@ -82,7 +82,7 @@ Now, let's create an Anaconda environment (conda) and call it 'env1'. In the sam
 #
     conda create -n env1 -c conda-forge -c bioconda fastqc hisat2 samtools
 
-**In addition**, if you wish, you can also install and compare other "mapping" tools (this will take more time and use more space in your computer):
+**Optional:** You can also install and compare other "mapping" tools (this will take more time and use more space in your computer):
 
     conda install -n env1 -c conda-forge -c bioconda bowtie2 minimap last star salmon kalisto
 

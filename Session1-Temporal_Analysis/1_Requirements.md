@@ -1,6 +1,6 @@
 # Session 1 | Requirements
 
-Before starting with these intructions, please watch this video: [Session1-RNAseq_Introduction](https://drive.google.com/file/d/1n-kHh7nw8iEld77rNf8mg3RX7fhNHOe8/view?usp=sharing).
+Before starting with these intructions, please watch this video: [Session1-RNAseq_Introduction](https://drive.google.com/open?id=1ogZf5UNYp2iL3x4-b3RRnU5Vmk7qJVBQ).
 
 For this session you will need a **Unix compatible system**, ie. MAC or Linux operating system to work with **Unix Shell** (terminal/command line). Windows10 users can activate the Windows Subsystem for Linux feature to enable instalation of Ubuntu inside Windows10.
 

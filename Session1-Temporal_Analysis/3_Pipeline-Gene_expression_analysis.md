@@ -463,7 +463,7 @@ title(main="D. cpm with log2 and 0=1",ylab="pLog2(cpm)")
 
 <img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig2-1.png" style="display: block; margin: auto;" />
 
-As you can see on panel A, the most datapoints are sticked to the x bar
+As you can see in panel A, the most data points are sticked to the x bar
 due that the majority of genes having low count values. A way to “see
 all the datapoints” is to apply a data transformation. In panel B, a
 log2 transformation was applied. However, since log2 function can’t deal

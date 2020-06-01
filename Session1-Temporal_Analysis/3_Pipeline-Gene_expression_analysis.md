@@ -720,8 +720,8 @@ legend("topright", title="time", unique(as.character(dgList$metadata$Time)), tex
 ### 6.1. edgeR MDS
 
 We can examine inter-sample relationships by producing a plot based on
-multidimensional scaling. More details of this kind of exploration on
-Session4… this is just an example. When an object of type DGEList is the
+multidimensional scaling. More details of this kind of exploration in
+Session2… this is just an example. When an object of type DGEList is the
 input of plotMDS function, the real called function is a modified
 version designed by edgeR team with real name “plotMDS.DGEList”. It
 convert the counts to log-cpm and pass these to the limma plotMDS

@@ -21,7 +21,7 @@ We will not use the original files for this session, but if you'd like to start 
 
 Following the **Data Preprocessing** tutorial from Session 1, we generated a counts table from these files. You can download it [here](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session2-Treatment_and_Multivariate/Data/fc0.original.counts.session2-1.txt). 
 
-The associated metadata can be found [here](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session2-Treatment_and_Multivariate/Data/metadata_session2-1.txt).
+The associated metadata can be found [here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/Data/metadata_session2-1.txt).
 
 Download Arabidopsis Gene Ontology data:
 
@@ -153,6 +153,6 @@ The original files and can be found here:
 | ```007/SRR5440897``` | Root  | None | 1 | 120 |
 
 
-Following the **Data Preprocessing** tutorial from Session 1, we generated a counts table located [here](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session2-Treatment_and_Multivariate/Data/fc0.original.counts.session2-2.txt). 
+Following the **Data Preprocessing** tutorial from Session 1, we generated a counts table located [here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/Data/fc0.original.counts.session2-2.txt). 
 
-The associated metadata can be found [here](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session2-Treatment_and_Multivariate/Data/metadata_session2-2.txt).
+The associated metadata can be found [here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/Data/metadata_session2-2.txt).

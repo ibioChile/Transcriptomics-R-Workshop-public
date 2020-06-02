@@ -30,8 +30,6 @@ library(edgeR)
 library(knitr)
 library(dplyr)
 library(ViSEAGO)
-
-
 ```
 
 > Don't forget to set the folder where you downloaded your files as the working directory.
@@ -43,7 +41,7 @@ getwd()
 
 ###  Importing and formatting data.
 
-Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session2-Treatment_and_Multivariate/Data) folder).
+Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Treatment_and_Multivariate/Data) folder).
 
 ```{r}
 counts <- read.table("fc0.original.counts.session2-1.txt")
@@ -178,7 +176,7 @@ dge <- calcNormFactors(dge, method = "TMM")
 dge
 ```
 
-To compare Control vs Treatment samples, we need a design matrix with "Treatment" conditions and to estimate the dispersion of the samples (review [Session 1](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session1-Temporal_Analysis/3_Pipeline-Gene_expression_analysis.md) for more information):
+To compare Control vs Treatment samples, we need a design matrix with "Treatment" conditions and to estimate the dispersion of the samples (review [Session 1](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session1-Temporal_Analysis/3_Pipeline-Gene_expression_analysis.md) for more information):
 
 ```{r}
 design <- model.matrix(~metadata$Treatment)
@@ -242,7 +240,7 @@ There is a great overlap among the DEGs found by the two methods. There is a lar
 
 Once a list of DEGs has been obtained, it is useful to know the biological functions in which those genes may be involved in. This can be done by using specific databases, where the function of the organisms' genes has been previosuly identified. One of the most widely used databases to describe genes is [Gene Ontology](www.geneontology.org). This database is a collaborative initiative, in which the information related to genes is stored using a structured language.
 
-There are a lot of tools to analyze lists of genes with gene ontology data. In this example, we will utilize the ViSEAGO package of Bioconductor (https://www.bioconductor.org/packages/release/bioc/html/ViSEAGO.html). Although ViSEAGO is prepared to be quickly used for model organisms (as the case of Arabidopsis), in this example, the gene-function relation (GOterm) will be loaded from the website http://current.geneontology.org/products/pages/downloads.html (see this session's [Requirements](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session2-Treatment_and_Multivariate/1_Requirements.md))
+There are a lot of tools to analyze lists of genes with gene ontology data. In this example, we will utilize the ViSEAGO package of Bioconductor (https://www.bioconductor.org/packages/release/bioc/html/ViSEAGO.html). Although ViSEAGO is prepared to be quickly used for model organisms (as the case of Arabidopsis), in this example, the gene-function relation (GOterm) will be loaded from the website http://current.geneontology.org/products/pages/downloads.html (see this session's [Requirements](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/1_Requirements.md))
 
 Read this file:
 

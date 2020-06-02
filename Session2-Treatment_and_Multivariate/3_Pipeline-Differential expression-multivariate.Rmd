@@ -35,7 +35,7 @@ setwd("~/Documents/IBIO/R workshop/Session2/")
 
 ### 1. Importing and formatting data.
 
-Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session2-Treatment_and_Multivariate/Data) folder).
+Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Treatment_and_Multivariate/Data) folder).
 
 ```{r}
 counts <- read.table("fc0.original.counts.session2-2.txt")

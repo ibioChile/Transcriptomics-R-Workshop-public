@@ -6,7 +6,7 @@ For this session, we will use data published in the paper ["Temporal transcripti
 networks underlying nitrogen signaling and use
 in plants"](https://www.pnas.org/content/pnas/115/25/6494.full.pdf). This time, we will use RNA sequencing data from samples of Arabidopsis thaliana's shoot taken at time 120 min, growing with 5mm of nitrate (no treatment) and no nitrate addition (KCl treatment).
 
-We will not use the original files for this session, but if you'd like to start the analysis from the beginning, the original files and can be found here:
+We will not use the original files for this session, but if you'd like to start the analysis from the beginning, the original files can be found here:
 
     wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR544/FOLDER/*
      

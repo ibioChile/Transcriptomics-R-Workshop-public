@@ -71,7 +71,7 @@ getwd()
 
 Start importing counts table and metadata associated to the samples
 (previously downloaded from
-[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session2-Treatment_and_Multivariate/Data)
+[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Treatment_and_Multivariate/Data)
 folder).
 
 ``` r
@@ -414,7 +414,7 @@ dge
 To compare Control vs Treatment samples, we need a design matrix with
 “Treatment” conditions and to estimate the dispersion of the samples
 (review
-[Session 1](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session1-Temporal_Analysis/3_Pipeline-Gene_expression_analysis.md)
+[Session 1](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session1-Temporal_Analysis/3_Pipeline-Gene_expression_analysis.md)
 for more information):
 
 ``` r
@@ -592,7 +592,7 @@ the case of Arabidopsis), in this example, the gene-function relation
 (GOterm) will be loaded from the website
 <http://current.geneontology.org/products/pages/downloads.html> (see
 this session’s
-[Requirements](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session2-Treatment_and_Multivariate/1_Requirements.md))
+[Requirements](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/1_Requirements.md))
 
 Read this
     file:

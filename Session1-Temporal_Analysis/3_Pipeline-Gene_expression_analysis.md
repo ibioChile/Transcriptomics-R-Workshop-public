@@ -419,12 +419,12 @@ Let’s see the normalization results with a boxplot
 par(mfrow=c(1,2))
 # plot of unnormalised data
 cldgList <- cpm(dgList, log=TRUE, prior.count = 1)
-boxplot(cldgList, las=2, col=as.vector(dgList$metadata$Color), main="")
+boxplot(cldgList, las=2, main="")
 title(main="A. Unnormalised data",ylab="Log2-cpm")
 
 # plot of normalised data
 cldgList2 <- cpm(dgList2, log=TRUE, prior.count = 1)
-boxplot(cldgList2, las=2, col=as.vector(dgList$metadata$Color), main="")
+boxplot(cldgList2, las=2, main="")
 title(main="B. Normalised data",ylab="Log2-cpm")
 ```
 

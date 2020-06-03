@@ -4,9 +4,9 @@ Before starting with these intructions, please watch this video: [Session1-RNAse
 
 For this session you will need a **Unix compatible system**, ie. MAC or Linux operating system to work with **Unix Shell** (terminal/command line). Windows10 users can activate the Windows Subsystem for Linux feature to enable instalation of Ubuntu inside Windows10.
 
-Please read the [Workshop Setup](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Workshop%20Setup.md) document for more info.
+Please read the [Workshop Setup](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Workshop%20Setup.md) document for more info.
 
-More info about how to use **Unix Shell** (command line) [can be found here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Command%20line.md).
+More info about how to use **Unix Shell** (command line) [can be found here](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Command%20line.md).
 
 ### **Watch [this video](https://drive.google.com/file/d/1GZbBg3DW284LVvTSucif0fhKskjvMr4X/view?usp=sharing) for a more detailed explanation of the following steps**
 
@@ -27,6 +27,14 @@ Within test1, create a folder to store downloaded programs.
 
     wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip
     unzip Trimmomatic-0.39.zip
+    
+> An alternative program to download files in command line is "curl", available on Linux and MacOS.  
+> example:  
+> curl -O http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip  
+
+> If wget, unzip, tree or any other system application is not installed on your system:
+>> In MacOS (with Homebrew installed) use "brew install \<package\>"  
+>> In Ubuntu use "sudo apt install \<package\>"  
 
 ### 1.2 Anaconda/Miniconda installation
 
@@ -82,7 +90,7 @@ Now, let's create an Anaconda environment (conda) and call it 'env1'. In the sam
 #
     conda create -n env1 -c conda-forge -c bioconda fastqc hisat2 samtools
 
-**Optional:** You can also install and compare other "mapping" tools (this will take more time and use more space in your computer):
+**In addition**, if you wish, you can also install and compare other "mapping" tools (this will take more time and use more space in your computer):
 
     conda install -n env1 -c conda-forge -c bioconda bowtie2 minimap last star salmon kalisto
 
@@ -109,19 +117,34 @@ Run these commands to download a *reduced* version of these files (needed for th
 
     cd test1
     mkdir reduced && cd reduced
-    wget http://genius.bio.puc.cl/genius/workshop/reduced_reads_session3.tar
-    wget http://genius.bio.puc.cl/genius/workshop/reduced_reads_session3.tar.md5
-    md5sum -c reduced_reads_session3.tar.md5 
-    # the result must be "OK", if not, download the reduced_reads_session3.tar again.
-    tar xf reduced_reads_session3.tar
+    wget http://genius.bio.puc.cl/genius/workshop/reduced_reads_session1.tar
+    wget http://genius.bio.puc.cl/genius/workshop/reduced_reads_session1.tar.md5
+    
+    Linux:  
+    md5sum reduced_reads_session1.tar  
+    
+    OSX:  
+    md5 reduced_reads_session1.tar  
+    
+The previous command will produce a hash that must be identical to the hash inside the .md5 file.  
+    
+Use the following  command to see the .md5 content and compare the hash with the output of the previous command.  
+
+    cat reduced_reads_session1.tar.md5
+    
+If the hash is identical, then proceed. Otherwise, download the reduced_reads_session1.tar again.  
+
+    tar xf reduced_reads_session1.tar
     cd ..
 
-Run these commands to download the *original* version of these files:
+Run these commands **if you want** to download the *original* version of these files (alternative):  
 
     cd test1
     mkdir raw && cd raw
     wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR544/FOLDER/*
-    
+
+This table present the meaning of each sample in terms of sample time and replicate number.
+
 | FOLDER               | Replicate | Time |
 |----------------------|-----------|------|
 | ```006/SRR5440786``` | 1         | 0    |
@@ -164,6 +187,6 @@ Furthermore, we need to download from TAIR, *Arabidopsis thaliana*'s genome and 
     wget ftp://ftp.ensemblgenomes.org/pub/release-34/plants/gtf/arabidopsis_thaliana/Arabidopsis_thaliana.TAIR10.34.gtf.gz
     gunzip *.gz
 
-With the previous steps we are ready to follow the [Data pre-processing instructions](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session1-Temporal_Analysis/2_Pipeline-Data_preprocessing.md).
+With the previous steps we are ready to follow the [Data pre-processing instructions](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session1-Temporal_Analysis/2_Pipeline-Data_preprocessing.md).
 
 <END>

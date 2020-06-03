@@ -1,7 +1,7 @@
 ---
-title: "Sesion 1 | Part 2 : Gene expression analysis"
+title: "Sesion 3 | Part 2 : Gene expression analysis"
 author: "Jonathan Maldonado"
-date: "5/22/2020"
+date: "06/03/2020"
 output: rmarkdown::github_document
 ---
 
@@ -13,6 +13,7 @@ knitr::opts_knit$set(root.dir = "~/iBio/workshop2020-iBio/S1/")
 Following the former pipeline, we were able to obtain a table with read counts per gene of Arabidopsis. That table was generated using the reduced version of the original sequencing files. For this pipeline, we will use a similar file, containing gene counts obtained from the analysis of the original .fastq files.
 
 Open R Studio (or just R) and load the following libraries.
+Load each library **one at a time** to be sure that the library is installed on your system. Otherwise, remember to use BiocManager::install("packagename").
 
 ```{r message=FALSE}
 library(edgeR)
@@ -37,7 +38,7 @@ setwd("~/iBio/workshop2020-iBio/S1")
 
 ## 1. Importing and formatting data
 
-Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session1-Temporal_Analysis/Data) folder).
+Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session3:RNA-SeqI/Data) folder).
 
 ```{r}
 counts <- read.table("fc0.counts_original.txt")
@@ -146,15 +147,18 @@ Let's see the normalization results with a boxplot
 >To ensure a good visualization I will use a data transformation called "cpm" from "counts per million" and log2. This will be profundized on the next section.
 
 ```{r fig1, fig.align="center", dpi=300, fig.height=4, fig.width=12}
+
+Color <- c("#FFC900", "#FFB900","#FFA800", "#FF9200", "#FF7700","#FF5D00","#FF4300","#FF2900","#FF0000","#E40000")[as.factor(metadata$Time)]
+
 par(mfrow=c(1,2))
 # plot of unnormalised data
 cldgList <- cpm(dgList, log=TRUE, prior.count = 1)
-boxplot(cldgList, las=2, main="")
+boxplot(cldgList, las=2, col=Color, main="")
 title(main="A. Unnormalised data",ylab="Log2-cpm")
 
 # plot of normalised data
 cldgList2 <- cpm(dgList2, log=TRUE, prior.count = 1)
-boxplot(cldgList2, las=2, main="")
+boxplot(cldgList2, las=2, col=Color, main="")
 title(main="B. Normalised data",ylab="Log2-cpm")
 ```
 
@@ -167,8 +171,6 @@ Count data has a has a broad spectrum of distribution, from genes with zero coun
 Plot the following boxplots:
 
 ```{r fig2, fig.align="center", dpi=350, fig.height=4, fig.width=12, warning=FALSE}
-
-Color <- c("#FFC900", "#FFB900","#FFA800", "#FF9200", "#FF7700","#FF5D00","#FF4300","#FF2900","#FF0000","#E40000")[as.factor(metadata$Time)]
 
 par(mfrow=c(1,4)) #Figure2
 boxplot(dgList$counts, las=2, col=as.matrix(Color), main="")
@@ -358,7 +360,7 @@ legend("topright", title="time", unique(as.character(dgList$metadata$Time)), tex
 
 ### 6.1. edgeR MDS
 
-We can examine inter-sample relationships by producing a plot based on multidimensional scaling. More details of this kind of exploration on Session 2... this is just an example. When an object of type DGEList is the input of plotMDS function, the real called function is a modified version designed by edgeR team with real name "plotMDS.DGEList". It convert the counts to log-cpm and pass these to the limma plotMDS function. There, distance between each pair of samples (columns) is the root-mean-square deviation (Euclidean distance) for the top genes.
+We can examine inter-sample relationships by producing a plot based on multidimensional scaling. More details of this kind of exploration on Session4... this is just an example. When an object of type DGEList is the input of plotMDS function, the real called function is a modified version designed by edgeR team with real name "plotMDS.DGEList". It convert the counts to log-cpm and pass these to the limma plotMDS function. There, distance between each pair of samples (columns) is the root-mean-square deviation (Euclidean distance) for the top genes.
 
 Distances on the plot can be interpreted as leading log2-fold-change, meaning the typical (root-mean-square) log2-fold-change between the samples for the genes that distinguish those samples.
 
@@ -579,8 +581,15 @@ Setting a color pallete over red color:
 cimColor <- colorRampPalette(rev(brewer.pal(9, "Reds")))(20)
 ```
 
+Before to plot the next figure, expand the RStudio plot panel.
+
+> In general, if you receive a "margins too large" message, try to expand the RStudio plot panel and try again.  
+
+> Another solution for large figures is to execute a **x11()** command before each plot. This will activate a new window where the next plot will be diplayed.  
+
+
 ```{r fig12, fig.align="center", dpi=300, fig.height=6, fig.width=12}
-cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
+cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3, margins = c(0.5, 0.5))
 ```
 
 What if we use cpm instead of pseudocount?
@@ -591,7 +600,7 @@ sampleDists <- as.matrix(dist(t(cpmCounts)), method = "cor")
 ```
 
 ```{r fig13, fig.align="center", dpi=300, fig.height=6, fig.width=12}
-cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
+cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3, margins = c(0.5, 0.5))
 ```
 
 Note that sample clustering is different when using pseudocounts or cpm. The distance between samples is sensible to the kind of data that you use and pseudocounts are different than cpm, as you see on the panel C and D of the first graph of data transformation section. Some people do prefer to use pseudocounts but the correct way is to use cpm (https://www.biostars.org/p/165619/).
@@ -841,17 +850,17 @@ On this example we will use the "samples dendogram" of the previous heatmap "fin
 plot(finalHMc$ddr, leaflab="none")
 ```
 
-The tree could be "cutted" at a desired level to obtain clusters. If we cut at 35%, we will produce 5 clusters
+The tree could be "cutted" at a desired level to obtain clusters. If we cut at 40%, we will produce 4 clusters
 
 ```{r fig25, fig.align="center", dpi=300, fig.height=5, fig.width=8}
 plot(finalHMc$ddr, leaflab="none")
-abline(h=35, lwd=2, col="pink")
+abline(h=40, lwd=2, col="pink")
 ```
 
 This is the commmand to cut the tree at the desired level and save clusters:
 
 ```{r}
-geneClust <- cutree(as.hclust(finalHMc$ddr), h=35) # 50x3 35x5
+geneClust <- cutree(as.hclust(finalHMc$ddr), h=40) # 50x3 40x4 30x5
 
 ```
 
@@ -875,7 +884,6 @@ length(names(which(geneClust == 1)))
 length(names(which(geneClust == 2)))
 length(names(which(geneClust == 3)))
 length(names(which(geneClust == 4)))
-length(names(which(geneClust == 5)))
 ```
 
 #### 7.4.2. Expression patterns of group of genes
@@ -906,7 +914,11 @@ Now, we prepare the data frame
 
 ```{r}
 d <- data.frame(cbind(dgList$metadata$Time,cores))
+#names <- rownames(d)
+#rownames(d) <- NULL
+#d <- cbind(names,d)
 colnames(d) <-c("time", paste0("clust_",1:ncol(cores)))
+
 #get the data frame into long format for plotting
 dmolten <- melt(d, id.vars = "time")
 #order by time
@@ -994,44 +1006,42 @@ return(p)
 p2 <- cluster_plot(scaledata, 2)
 p3 <- cluster_plot(scaledata, 3)
 p4 <- cluster_plot(scaledata, 4)
-p5 <- cluster_plot(scaledata, 5)
 ```
 
 Now, we are ready to plot all clusters:
 
 ```{r fig28, fig.align="center", dpi=350, fig.height=5, fig.width=12}
+# Expand the RStudio plot panel before the plot
 grid.arrange(p0 + theme(legend.position = "none"),
              p1+ ylab(NULL),
              p2+ ylab(NULL),
              p3+ ylab(NULL),
              p4+ ylab(NULL),
-             p5+ ylab(NULL),
-             ncol=6)
+             ncol=5)
 ```
 
 Cool, but each graph have their own scale and they are not sorted. Look for the max and min axes value through the graphs to set global values.
 
 ```{r}
 # Setting min a max limits of y axes based on all five plots
-ylim1=-6; ylim2=17
+ylim1=-5; ylim2=17
 ```
 
 Finally, sort the command lines of expression plots according to p0 order and plot!
 
 ```{r fig29, fig.align="center", dpi=350, fig.height=5, fig.width=12}
-# don't forget to maximize the empty window before the plot
+# Expand the RStudio plot panel before the plot
 grid.arrange(p0 + ylim(ylim1, ylim2) + theme(legend.position = "none"),
-             p5 + ylim(ylim1, ylim2) + ylab(NULL), 
+             p4 + ylim(ylim1, ylim2) + ylab(NULL), 
              p2 + ylim(ylim1, ylim2) + ylab(NULL), 
              p1 + ylim(ylim1, ylim2) + ylab(NULL), 
              p3 + ylim(ylim1, ylim2) + ylab(NULL), 
-             p4 + ylim(ylim1, ylim2) + ylab(NULL), 
-             ncol=6)
+             ncol=5)
 ```
 
 #### 7.4.3. Saving results
 
-Now, you would want to know what functions are represented on this selected genes. This will be explained on session 2.
+Now, you would want to know what functions are represented on this selected genes. This will be explained on session5.
 
 Meanwhile you can save the gene list of each cluster nor the list of all clusters to a text file to be ready.
 

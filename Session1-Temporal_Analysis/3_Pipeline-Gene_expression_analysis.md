@@ -1,14 +1,18 @@
-Sesion 1 | Part 2 : Gene expression analysis
+Sesion 3 | Part 2 : Gene expression analysis
 ================
 Jonathan Maldonado
-5/22/2020
+06/03/2020
 
 Following the former pipeline, we were able to obtain a table with read
 counts per gene of Arabidopsis. That table was generated using the
 reduced version of the original sequencing files. For this pipeline, we
-will use a similar file, containing gene counts obtained from the analysis of the original .fastq files.
+will use a similar file, containing gene counts obtained from the
+analysis of the original .fastq files.
 
-Open R Studio (or just R) and load the following libraries.
+Open R Studio (or just R) and load the following libraries. Load each
+library **one at a time** to be sure that the library is installed on
+your system. Otherwise, remember to use
+BiocManager::install(“packagename”).
 
 ``` r
 library(edgeR)
@@ -36,7 +40,7 @@ setwd("~/iBio/workshop2020-iBio/S1")
 
 Start importing counts table and metadata associated to the samples
 (previously downloaded from
-[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session1-Temporal_Analysis/Data)
+[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session3:RNA-SeqI/Data)
 folder).
 
 ``` r
@@ -63,12 +67,12 @@ kable(head(counts))
 
 |           | SRR5440784 | SRR5440785 | SRR5440786 | SRR5440814 | SRR5440815 | SRR5440816 | SRR5440817 | SRR5440818 | SRR5440819 | SRR5440820 | SRR5440821 | SRR5440822 | SRR5440823 | SRR5440824 | SRR5440825 | SRR5440826 | SRR5440827 | SRR5440828 | SRR5440829 | SRR5440830 | SRR5440831 | SRR5440832 | SRR5440833 | SRR5440834 | SRR5440835 | SRR5440836 | SRR5440837 | SRR5440838 | SRR5440839 | SRR5440840 |
 | --------- | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: |
-| AT1G01010 |       2074 |       3004 |       2310 |       1033 |        750 |        876 |        553 |        766 |        717 |        838 |        441 |        526 |        671 |        804 |       1181 |        785 |        732 |        524 |        611 |        751 |        562 |        731 |        591 |       1170 |        514 |        762 |        525 |        797 |        397 |        971 |
-| AT1G01020 |        750 |       1420 |       1340 |        405 |        444 |        419 |        573 |        477 |        443 |        409 |        642 |        514 |        513 |        390 |        723 |        424 |        333 |        335 |        350 |        674 |        547 |        445 |        402 |        556 |        202 |        438 |        476 |        523 |        399 |        728 |
-| AT1G03987 |          2 |          0 |          8 |          0 |          2 |          0 |          1 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          2 |          2 |          0 |          2 |          0 |          0 |          0 |          0 |          2 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |
-| AT1G01030 |        232 |        389 |        352 |         99 |        119 |        108 |         96 |        110 |         74 |        118 |        129 |         88 |        153 |        110 |        154 |         64 |         81 |         62 |         64 |        114 |         97 |        168 |        119 |        153 |         99 |         96 |         72 |         85 |         46 |        122 |
-| AT1G01040 |       7811 |      11842 |      10856 |       2798 |       2955 |       2800 |       2766 |       3526 |       3079 |       3955 |       2624 |       2787 |       3336 |       2702 |       4821 |       2695 |       2739 |       2692 |       2473 |       3187 |       2885 |       3427 |       2719 |       4415 |       1932 |       3198 |       2637 |       3589 |       2320 |       4172 |
-| AT1G03993 |        629 |       1058 |        970 |        180 |        176 |        156 |         69 |        200 |        198 |        290 |        124 |        154 |        211 |        208 |        345 |        138 |        120 |        223 |        121 |        183 |        188 |        202 |        129 |        279 |        170 |        204 |        128 |        269 |        149 |        365 |
+| AT1G01010 |       1040 |       1512 |       1162 |        517 |        379 |        440 |        279 |        384 |        362 |        421 |        221 |        265 |        339 |        406 |        597 |        394 |        367 |        263 |        307 |        379 |        283 |        369 |        296 |        588 |        258 |        383 |        265 |        400 |        199 |        487 |
+| AT1G01020 |        376 |        722 |        679 |        206 |        226 |        213 |        291 |        244 |        224 |        209 |        327 |        260 |        260 |        197 |        368 |        217 |        168 |        171 |        178 |        340 |        277 |        225 |        206 |        282 |        103 |        222 |        243 |        267 |        201 |        370 |
+| AT1G03987 |          1 |          0 |          4 |          0 |          1 |          0 |          1 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          1 |          1 |          0 |          1 |          0 |          0 |          0 |          0 |          1 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |
+| AT1G01030 |        116 |        195 |        179 |         51 |         60 |         55 |         48 |         55 |         37 |         60 |         65 |         45 |         77 |         56 |         81 |         32 |         42 |         32 |         33 |         58 |         49 |         85 |         60 |         78 |         50 |         50 |         37 |         43 |         23 |         61 |
+| AT1G01040 |       3931 |       6002 |       5513 |       1418 |       1503 |       1436 |       1415 |       1787 |       1571 |       2006 |       1340 |       1413 |       1702 |       1382 |       2453 |       1369 |       1388 |       1365 |       1257 |       1622 |       1458 |       1737 |       1384 |       2240 |        983 |       1627 |       1346 |       1833 |       1174 |       2119 |
+| AT1G03993 |        327 |        564 |        513 |         94 |         94 |         81 |         38 |        106 |        109 |        155 |         65 |         82 |        111 |        116 |        182 |         75 |         65 |        122 |         65 |        101 |         98 |        105 |         67 |        151 |         89 |        108 |         73 |        143 |         80 |        195 |
 
 This is a time-series data so, it would be good that samples order
 follows the time-series.
@@ -102,44 +106,44 @@ dgList
     ## An object of class "DGEList"
     ## $counts
     ##           SRR5440784 SRR5440785 SRR5440786 SRR5440814 SRR5440823 SRR5440832
-    ## AT1G01010       2074       3004       2310       1033        671        731
-    ## AT1G01020        750       1420       1340        405        513        445
-    ## AT1G03987          2          0          8          0          0          0
-    ## AT1G01030        232        389        352         99        153        168
-    ## AT1G01040       7811      11842      10856       2798       3336       3427
+    ## AT1G01010       1040       1512       1162        517        339        369
+    ## AT1G01020        376        722        679        206        260        225
+    ## AT1G03987          1          0          4          0          0          0
+    ## AT1G01030        116        195        179         51         77         85
+    ## AT1G01040       3931       6002       5513       1418       1702       1737
     ##           SRR5440815 SRR5440824 SRR5440833 SRR5440816 SRR5440825 SRR5440834
-    ## AT1G01010        750        804        591        876       1181       1170
-    ## AT1G01020        444        390        402        419        723        556
-    ## AT1G03987          2          0          2          0          2          0
-    ## AT1G01030        119        110        119        108        154        153
-    ## AT1G01040       2955       2702       2719       2800       4821       4415
+    ## AT1G01010        379        406        296        440        597        588
+    ## AT1G01020        226        197        206        213        368        282
+    ## AT1G03987          1          0          1          0          1          0
+    ## AT1G01030         60         56         60         55         81         78
+    ## AT1G01040       1503       1382       1384       1436       2453       2240
     ##           SRR5440817 SRR5440826 SRR5440835 SRR5440818 SRR5440827 SRR5440836
-    ## AT1G01010        553        785        514        766        732        762
-    ## AT1G01020        573        424        202        477        333        438
-    ## AT1G03987          1          2          0          0          0          0
-    ## AT1G01030         96         64         99        110         81         96
-    ## AT1G01040       2766       2695       1932       3526       2739       3198
+    ## AT1G01010        279        394        258        384        367        383
+    ## AT1G01020        291        217        103        244        168        222
+    ## AT1G03987          1          1          0          0          0          0
+    ## AT1G01030         48         32         50         55         42         50
+    ## AT1G01040       1415       1369        983       1787       1388       1627
     ##           SRR5440819 SRR5440828 SRR5440837 SRR5440820 SRR5440829 SRR5440838
-    ## AT1G01010        717        524        525        838        611        797
-    ## AT1G01020        443        335        476        409        350        523
-    ## AT1G03987          0          2          0          0          0          0
-    ## AT1G01030         74         62         72        118         64         85
-    ## AT1G01040       3079       2692       2637       3955       2473       3589
+    ## AT1G01010        362        263        265        421        307        400
+    ## AT1G01020        224        171        243        209        178        267
+    ## AT1G03987          0          1          0          0          0          0
+    ## AT1G01030         37         32         37         60         33         43
+    ## AT1G01040       1571       1365       1346       2006       1257       1833
     ##           SRR5440821 SRR5440830 SRR5440839 SRR5440822 SRR5440831 SRR5440840
-    ## AT1G01010        441        751        397        526        562        971
-    ## AT1G01020        642        674        399        514        547        728
+    ## AT1G01010        221        379        199        265        283        487
+    ## AT1G01020        327        340        201        260        277        370
     ## AT1G03987          0          0          0          0          0          0
-    ## AT1G01030        129        114         46         88         97        122
-    ## AT1G01040       2624       3187       2320       2787       2885       4172
+    ## AT1G01030         65         58         23         45         49         61
+    ## AT1G01040       1340       1622       1174       1413       1458       2119
     ## 32828 more rows ...
     ## 
     ## $samples
-    ##            group  lib.size norm.factors
-    ## SRR5440784     0  80084739            1
-    ## SRR5440785     0 118358949            1
-    ## SRR5440786     0 120487357            1
-    ## SRR5440814     5  33821200            1
-    ## SRR5440823     5  36535298            1
+    ##            group lib.size norm.factors
+    ## SRR5440784     0 41320115            1
+    ## SRR5440785     0 60926929            1
+    ## SRR5440786     0 62461021            1
+    ## SRR5440814     5 17293869            1
+    ## SRR5440823     5 18728454            1
     ## 25 more rows ...
     ## 
     ## $genes
@@ -151,45 +155,45 @@ dgList
     ## AT1G01040 AT1G01040
     ## 32828 more rows ...
 
-A more detailed view in $samples will show you that they are grouped, as
+A more detailed view on $samples will show you that they are grouped, as
 expected.
 
 ``` r
 kable(dgList$samples)
 ```
 
-|            | group |  lib.size | norm.factors |
-| ---------- | :---- | --------: | -----------: |
-| SRR5440784 | 0     |  80084739 |            1 |
-| SRR5440785 | 0     | 118358949 |            1 |
-| SRR5440786 | 0     | 120487357 |            1 |
-| SRR5440814 | 5     |  33821200 |            1 |
-| SRR5440823 | 5     |  36535298 |            1 |
-| SRR5440832 | 5     |  34940880 |            1 |
-| SRR5440815 | 10    |  27438300 |            1 |
-| SRR5440824 | 10    |  27493782 |            1 |
-| SRR5440833 | 10    |  27354641 |            1 |
-| SRR5440816 | 15    |  32378605 |            1 |
-| SRR5440825 | 15    |  48431969 |            1 |
-| SRR5440834 | 15    |  43822059 |            1 |
-| SRR5440817 | 20    |  28444049 |            1 |
-| SRR5440826 | 20    |  29809654 |            1 |
-| SRR5440835 | 20    |  19823796 |            1 |
-| SRR5440818 | 30    |  35934994 |            1 |
-| SRR5440827 | 30    |  29025019 |            1 |
-| SRR5440836 | 30    |  33060473 |            1 |
-| SRR5440819 | 45    |  32357400 |            1 |
-| SRR5440828 | 45    |  28803027 |            1 |
-| SRR5440837 | 45    |  34570401 |            1 |
-| SRR5440820 | 60    |  46978269 |            1 |
-| SRR5440829 | 60    |  35386483 |            1 |
-| SRR5440838 | 60    |  42840822 |            1 |
-| SRR5440821 | 90    |  39266602 |            1 |
-| SRR5440830 | 90    |  45466861 |            1 |
-| SRR5440839 | 90    |  29298806 |            1 |
-| SRR5440822 | 120   |  40632550 |            1 |
-| SRR5440831 | 120   |  35091302 |            1 |
-| SRR5440840 | 120   |  53612258 |            1 |
+|            | group | lib.size | norm.factors |
+| ---------- | :---- | -------: | -----------: |
+| SRR5440784 | 0     | 41320115 |            1 |
+| SRR5440785 | 0     | 60926929 |            1 |
+| SRR5440786 | 0     | 62461021 |            1 |
+| SRR5440814 | 5     | 17293869 |            1 |
+| SRR5440823 | 5     | 18728454 |            1 |
+| SRR5440832 | 5     | 17873947 |            1 |
+| SRR5440815 | 10    | 14054914 |            1 |
+| SRR5440824 | 10    | 14086206 |            1 |
+| SRR5440833 | 10    | 14027534 |            1 |
+| SRR5440816 | 15    | 16583433 |            1 |
+| SRR5440825 | 15    | 24783195 |            1 |
+| SRR5440834 | 15    | 22452928 |            1 |
+| SRR5440817 | 20    | 14582449 |            1 |
+| SRR5440826 | 20    | 15257306 |            1 |
+| SRR5440835 | 20    | 10146285 |            1 |
+| SRR5440818 | 30    | 18398967 |            1 |
+| SRR5440827 | 30    | 14846112 |            1 |
+| SRR5440836 | 30    | 16928897 |            1 |
+| SRR5440819 | 45    | 16571707 |            1 |
+| SRR5440828 | 45    | 14868446 |            1 |
+| SRR5440837 | 45    | 17898490 |            1 |
+| SRR5440820 | 60    | 24313190 |            1 |
+| SRR5440829 | 60    | 18276065 |            1 |
+| SRR5440838 | 60    | 22102526 |            1 |
+| SRR5440821 | 90    | 20396516 |            1 |
+| SRR5440830 | 90    | 23416756 |            1 |
+| SRR5440839 | 90    | 15149483 |            1 |
+| SRR5440822 | 120   | 21133063 |            1 |
+| SRR5440831 | 120   | 18059122 |            1 |
+| SRR5440840 | 120   | 27663285 |            1 |
 
 ``` r
 kable(head(dgList$counts)) # segment of the table
@@ -197,12 +201,12 @@ kable(head(dgList$counts)) # segment of the table
 
 |           | SRR5440784 | SRR5440785 | SRR5440786 | SRR5440814 | SRR5440823 | SRR5440832 | SRR5440815 | SRR5440824 | SRR5440833 | SRR5440816 | SRR5440825 | SRR5440834 | SRR5440817 | SRR5440826 | SRR5440835 | SRR5440818 | SRR5440827 | SRR5440836 | SRR5440819 | SRR5440828 | SRR5440837 | SRR5440820 | SRR5440829 | SRR5440838 | SRR5440821 | SRR5440830 | SRR5440839 | SRR5440822 | SRR5440831 | SRR5440840 |
 | --------- | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: |
-| AT1G01010 |       2074 |       3004 |       2310 |       1033 |        671 |        731 |        750 |        804 |        591 |        876 |       1181 |       1170 |        553 |        785 |        514 |        766 |        732 |        762 |        717 |        524 |        525 |        838 |        611 |        797 |        441 |        751 |        397 |        526 |        562 |        971 |
-| AT1G01020 |        750 |       1420 |       1340 |        405 |        513 |        445 |        444 |        390 |        402 |        419 |        723 |        556 |        573 |        424 |        202 |        477 |        333 |        438 |        443 |        335 |        476 |        409 |        350 |        523 |        642 |        674 |        399 |        514 |        547 |        728 |
-| AT1G03987 |          2 |          0 |          8 |          0 |          0 |          0 |          2 |          0 |          2 |          0 |          2 |          0 |          1 |          2 |          0 |          0 |          0 |          0 |          0 |          2 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |
-| AT1G01030 |        232 |        389 |        352 |         99 |        153 |        168 |        119 |        110 |        119 |        108 |        154 |        153 |         96 |         64 |         99 |        110 |         81 |         96 |         74 |         62 |         72 |        118 |         64 |         85 |        129 |        114 |         46 |         88 |         97 |        122 |
-| AT1G01040 |       7811 |      11842 |      10856 |       2798 |       3336 |       3427 |       2955 |       2702 |       2719 |       2800 |       4821 |       4415 |       2766 |       2695 |       1932 |       3526 |       2739 |       3198 |       3079 |       2692 |       2637 |       3955 |       2473 |       3589 |       2624 |       3187 |       2320 |       2787 |       2885 |       4172 |
-| AT1G03993 |        629 |       1058 |        970 |        180 |        211 |        202 |        176 |        208 |        129 |        156 |        345 |        279 |         69 |        138 |        170 |        200 |        120 |        204 |        198 |        223 |        128 |        290 |        121 |        269 |        124 |        183 |        149 |        154 |        188 |        365 |
+| AT1G01010 |       1040 |       1512 |       1162 |        517 |        339 |        369 |        379 |        406 |        296 |        440 |        597 |        588 |        279 |        394 |        258 |        384 |        367 |        383 |        362 |        263 |        265 |        421 |        307 |        400 |        221 |        379 |        199 |        265 |        283 |        487 |
+| AT1G01020 |        376 |        722 |        679 |        206 |        260 |        225 |        226 |        197 |        206 |        213 |        368 |        282 |        291 |        217 |        103 |        244 |        168 |        222 |        224 |        171 |        243 |        209 |        178 |        267 |        327 |        340 |        201 |        260 |        277 |        370 |
+| AT1G03987 |          1 |          0 |          4 |          0 |          0 |          0 |          1 |          0 |          1 |          0 |          1 |          0 |          1 |          1 |          0 |          0 |          0 |          0 |          0 |          1 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |
+| AT1G01030 |        116 |        195 |        179 |         51 |         77 |         85 |         60 |         56 |         60 |         55 |         81 |         78 |         48 |         32 |         50 |         55 |         42 |         50 |         37 |         32 |         37 |         60 |         33 |         43 |         65 |         58 |         23 |         45 |         49 |         61 |
+| AT1G01040 |       3931 |       6002 |       5513 |       1418 |       1702 |       1737 |       1503 |       1382 |       1384 |       1436 |       2453 |       2240 |       1415 |       1369 |        983 |       1787 |       1388 |       1627 |       1571 |       1365 |       1346 |       2006 |       1257 |       1833 |       1340 |       1622 |       1174 |       1413 |       1458 |       2119 |
+| AT1G03993 |        327 |        564 |        513 |         94 |        111 |        105 |         94 |        116 |         67 |         81 |        182 |        151 |         38 |         75 |         89 |        106 |         65 |        108 |        109 |        122 |         73 |        155 |         65 |        143 |         65 |        101 |         80 |         82 |         98 |        195 |
 
 We can add metadata to the edgeR object to use it directly
 
@@ -220,44 +224,44 @@ dgList
     ## An object of class "DGEList"
     ## $counts
     ##           SRR5440784 SRR5440785 SRR5440786 SRR5440814 SRR5440823 SRR5440832
-    ## AT1G01010       2074       3004       2310       1033        671        731
-    ## AT1G01020        750       1420       1340        405        513        445
-    ## AT1G03987          2          0          8          0          0          0
-    ## AT1G01030        232        389        352         99        153        168
-    ## AT1G01040       7811      11842      10856       2798       3336       3427
+    ## AT1G01010       1040       1512       1162        517        339        369
+    ## AT1G01020        376        722        679        206        260        225
+    ## AT1G03987          1          0          4          0          0          0
+    ## AT1G01030        116        195        179         51         77         85
+    ## AT1G01040       3931       6002       5513       1418       1702       1737
     ##           SRR5440815 SRR5440824 SRR5440833 SRR5440816 SRR5440825 SRR5440834
-    ## AT1G01010        750        804        591        876       1181       1170
-    ## AT1G01020        444        390        402        419        723        556
-    ## AT1G03987          2          0          2          0          2          0
-    ## AT1G01030        119        110        119        108        154        153
-    ## AT1G01040       2955       2702       2719       2800       4821       4415
+    ## AT1G01010        379        406        296        440        597        588
+    ## AT1G01020        226        197        206        213        368        282
+    ## AT1G03987          1          0          1          0          1          0
+    ## AT1G01030         60         56         60         55         81         78
+    ## AT1G01040       1503       1382       1384       1436       2453       2240
     ##           SRR5440817 SRR5440826 SRR5440835 SRR5440818 SRR5440827 SRR5440836
-    ## AT1G01010        553        785        514        766        732        762
-    ## AT1G01020        573        424        202        477        333        438
-    ## AT1G03987          1          2          0          0          0          0
-    ## AT1G01030         96         64         99        110         81         96
-    ## AT1G01040       2766       2695       1932       3526       2739       3198
+    ## AT1G01010        279        394        258        384        367        383
+    ## AT1G01020        291        217        103        244        168        222
+    ## AT1G03987          1          1          0          0          0          0
+    ## AT1G01030         48         32         50         55         42         50
+    ## AT1G01040       1415       1369        983       1787       1388       1627
     ##           SRR5440819 SRR5440828 SRR5440837 SRR5440820 SRR5440829 SRR5440838
-    ## AT1G01010        717        524        525        838        611        797
-    ## AT1G01020        443        335        476        409        350        523
-    ## AT1G03987          0          2          0          0          0          0
-    ## AT1G01030         74         62         72        118         64         85
-    ## AT1G01040       3079       2692       2637       3955       2473       3589
+    ## AT1G01010        362        263        265        421        307        400
+    ## AT1G01020        224        171        243        209        178        267
+    ## AT1G03987          0          1          0          0          0          0
+    ## AT1G01030         37         32         37         60         33         43
+    ## AT1G01040       1571       1365       1346       2006       1257       1833
     ##           SRR5440821 SRR5440830 SRR5440839 SRR5440822 SRR5440831 SRR5440840
-    ## AT1G01010        441        751        397        526        562        971
-    ## AT1G01020        642        674        399        514        547        728
+    ## AT1G01010        221        379        199        265        283        487
+    ## AT1G01020        327        340        201        260        277        370
     ## AT1G03987          0          0          0          0          0          0
-    ## AT1G01030        129        114         46         88         97        122
-    ## AT1G01040       2624       3187       2320       2787       2885       4172
+    ## AT1G01030         65         58         23         45         49         61
+    ## AT1G01040       1340       1622       1174       1413       1458       2119
     ## 32828 more rows ...
     ## 
     ## $samples
-    ##            group  lib.size norm.factors
-    ## SRR5440784     0  80084739            1
-    ## SRR5440785     0 118358949            1
-    ## SRR5440786     0 120487357            1
-    ## SRR5440814     5  33821200            1
-    ## SRR5440823     5  36535298            1
+    ##            group lib.size norm.factors
+    ## SRR5440784     0 41320115            1
+    ## SRR5440785     0 60926929            1
+    ## SRR5440786     0 62461021            1
+    ## SRR5440814     5 17293869            1
+    ## SRR5440823     5 18728454            1
     ## 25 more rows ...
     ## 
     ## $genes
@@ -294,37 +298,37 @@ Now, review your new names
 dgList$samples
 ```
 
-    ##         group  lib.size norm.factors
-    ## t0.r1       0  80084739            1
-    ## t0.r2       0 118358949            1
-    ## t0.r3       0 120487357            1
-    ## t5.r1       5  33821200            1
-    ## t5.r2       5  36535298            1
-    ## t5.r3       5  34940880            1
-    ## t10.r1     10  27438300            1
-    ## t10.r2     10  27493782            1
-    ## t10.r3     10  27354641            1
-    ## t15.r1     15  32378605            1
-    ## t15.r2     15  48431969            1
-    ## t15.r3     15  43822059            1
-    ## t20.r1     20  28444049            1
-    ## t20.r2     20  29809654            1
-    ## t20.r3     20  19823796            1
-    ## t30.r1     30  35934994            1
-    ## t30.r2     30  29025019            1
-    ## t30.r3     30  33060473            1
-    ## t45.r1     45  32357400            1
-    ## t45.r2     45  28803027            1
-    ## t45.r3     45  34570401            1
-    ## t60.r1     60  46978269            1
-    ## t60.r2     60  35386483            1
-    ## t60.r3     60  42840822            1
-    ## t90.r1     90  39266602            1
-    ## t90.r2     90  45466861            1
-    ## t90.r3     90  29298806            1
-    ## t120.r1   120  40632550            1
-    ## t120.r2   120  35091302            1
-    ## t120.r3   120  53612258            1
+    ##         group lib.size norm.factors
+    ## t0.r1       0 41320115            1
+    ## t0.r2       0 60926929            1
+    ## t0.r3       0 62461021            1
+    ## t5.r1       5 17293869            1
+    ## t5.r2       5 18728454            1
+    ## t5.r3       5 17873947            1
+    ## t10.r1     10 14054914            1
+    ## t10.r2     10 14086206            1
+    ## t10.r3     10 14027534            1
+    ## t15.r1     15 16583433            1
+    ## t15.r2     15 24783195            1
+    ## t15.r3     15 22452928            1
+    ## t20.r1     20 14582449            1
+    ## t20.r2     20 15257306            1
+    ## t20.r3     20 10146285            1
+    ## t30.r1     30 18398967            1
+    ## t30.r2     30 14846112            1
+    ## t30.r3     30 16928897            1
+    ## t45.r1     45 16571707            1
+    ## t45.r2     45 14868446            1
+    ## t45.r3     45 17898490            1
+    ## t60.r1     60 24313190            1
+    ## t60.r2     60 18276065            1
+    ## t60.r3     60 22102526            1
+    ## t90.r1     90 20396516            1
+    ## t90.r2     90 23416756            1
+    ## t90.r3     90 15149483            1
+    ## t120.r1   120 21133063            1
+    ## t120.r2   120 18059122            1
+    ## t120.r3   120 27663285            1
 
 ## 3\. Data normalization
 
@@ -352,7 +356,7 @@ x\(samples\)norm.factors. For this dataset the effect of
 TMM-normalisation is mild, as evident in the magnitude of the scaling
 factors, which are all relatively close to 1.
 
-More info using this command:
+More info on this command:
 
 ``` r
 ?calcNormFactors
@@ -364,31 +368,31 @@ We will create a new edgeR object with the normalization
 dgList2 <- calcNormFactors(dgList, method="TMM")
 ```
 
-Now let’s compare the samples in both variables
+Now let’s compare the samples on both variables
 
 ``` r
 head(dgList$samples)
 ```
 
-    ##       group  lib.size norm.factors
-    ## t0.r1     0  80084739            1
-    ## t0.r2     0 118358949            1
-    ## t0.r3     0 120487357            1
-    ## t5.r1     5  33821200            1
-    ## t5.r2     5  36535298            1
-    ## t5.r3     5  34940880            1
+    ##       group lib.size norm.factors
+    ## t0.r1     0 41320115            1
+    ## t0.r2     0 60926929            1
+    ## t0.r3     0 62461021            1
+    ## t5.r1     5 17293869            1
+    ## t5.r2     5 18728454            1
+    ## t5.r3     5 17873947            1
 
 ``` r
 head(dgList2$samples)
 ```
 
-    ##       group  lib.size norm.factors
-    ## t0.r1     0  80084739    0.9777590
-    ## t0.r2     0 118358949    0.9706289
-    ## t0.r3     0 120487357    0.9066125
-    ## t5.r1     5  33821200    1.0849764
-    ## t5.r2     5  36535298    1.1103770
-    ## t5.r3     5  34940880    1.0810259
+    ##       group lib.size norm.factors
+    ## t0.r1     0 41320115    0.9654404
+    ## t0.r2     0 60926929    0.9684160
+    ## t0.r3     0 62461021    0.8988986
+    ## t5.r1     5 17293869    1.0887554
+    ## t5.r2     5 18728454    1.1159781
+    ## t5.r3     5 17873947    1.0828884
 
 The column $norm.factors is different. As expected, the calcNormFactors
 function fill those values according to the chosen method.
@@ -403,11 +407,11 @@ dgList$samples$norm.factors
 dgList2$samples$norm.factors
 ```
 
-    ##  [1] 0.9777590 0.9706289 0.9066125 1.0849764 1.1103770 1.0810259 1.1250347
-    ##  [8] 1.0799020 1.1121500 1.0604866 1.0958632 1.0663918 1.1381982 1.0782132
-    ## [15] 1.0995999 1.1039724 1.0148196 1.1314464 1.0879510 0.9937129 0.9352691
-    ## [22] 0.8714842 0.8916032 0.9437251 0.9146101 0.8884828 0.8827364 0.7870135
-    ## [29] 0.9063070 0.8212572
+    ##  [1] 0.9654404 0.9684160 0.8988986 1.0887554 1.1159781 1.0828884 1.1316193
+    ##  [8] 1.0839840 1.1163419 1.0616899 1.1014861 1.0684488 1.1413436 1.0814396
+    ## [15] 1.1069023 1.1089891 1.0195130 1.1366560 1.0956944 0.9946092 0.9323586
+    ## [22] 0.8671009 0.8890861 0.9443428 0.9044512 0.8881552 0.8771899 0.7781861
+    ## [29] 0.9043347 0.8206460
 
 Let’s see the normalization results with a boxplot
 
@@ -416,19 +420,21 @@ Let’s see the normalization results with a boxplot
 > the next section.
 
 ``` r
+Color <- c("#FFC900", "#FFB900","#FFA800", "#FF9200", "#FF7700","#FF5D00","#FF4300","#FF2900","#FF0000","#E40000")[as.factor(metadata$Time)]
+
 par(mfrow=c(1,2))
 # plot of unnormalised data
 cldgList <- cpm(dgList, log=TRUE, prior.count = 1)
-boxplot(cldgList, las=2, main="")
+boxplot(cldgList, las=2, col=Color, main="")
 title(main="A. Unnormalised data",ylab="Log2-cpm")
 
 # plot of normalised data
 cldgList2 <- cpm(dgList2, log=TRUE, prior.count = 1)
-boxplot(cldgList2, las=2, main="")
+boxplot(cldgList2, las=2, col=Color, main="")
 title(main="B. Normalised data",ylab="Log2-cpm")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig1-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig1-1.png" style="display: block; margin: auto;" />
 
 Did you see the difference? (hint: compare the median and the upper
 quartile). From now on, we will work with normalized data.
@@ -441,8 +447,6 @@ zero count to genes with thousands.
 Plot the following boxplots:
 
 ``` r
-Color <- c("#FFC900", "#FFB900","#FFA800", "#FF9200", "#FF7700","#FF5D00","#FF4300","#FF2900","#FF0000","#E40000")[as.factor(metadata$Time)]
-
 par(mfrow=c(1,4)) #Figure2
 boxplot(dgList$counts, las=2, col=as.matrix(Color), main="")
 title(main="A. Untransformed data",ylab="original data")
@@ -461,9 +465,9 @@ boxplot(cpmCounts, las=2, col=as.matrix(Color), main="")
 title(main="D. cpm with log2 and 0=1",ylab="pLog2(cpm)")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig2-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig2-1.png" style="display: block; margin: auto;" />
 
-As you can see in panel A, the most data points are sticked to the x bar
+As you can see on panel A, the most datapoints are sticked to the x bar
 due that the majority of genes having low count values. A way to “see
 all the datapoints” is to apply a data transformation. In panel B, a
 log2 transformation was applied. However, since log2 function can’t deal
@@ -491,9 +495,9 @@ hist(Log2_pseudoCounts[,"t0.r2"],col="lightblue", main="C. Log2_pseudoCounts")
 hist(cpmCounts[,"t0.r2"],col="lightblue", main="D. cpm+log2+pseudocounts")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig3-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig3-1.png" style="display: block; margin: auto;" />
 
-Take a look at the peak at zero, which is lost in the Log2 graph.
+Take a look at the peak at zero, which is lost on the Log2 graph.
 
 ## 5\. Gene filtering
 
@@ -533,14 +537,14 @@ summary(dgList2$counts[,1])
 ```
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##       0       6     357    2439    1978 3198498
+    ##       0       3     184    1258    1000 1840767
 
 ``` r
 summary(countsPerMillion[,1]) #first sample (t0.r1)
 ```
 
     ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-    ##     0.00     0.08     4.56    31.15    25.26 40847.41
+    ##     0.00     0.08     4.61    31.55    25.07 46143.64
 
 What’s the difference?… Let’s found what cells of the matrix have a cpm
 count above 1
@@ -567,8 +571,8 @@ keep <- which(rowSums(countCheck) >= 2) # over 1 cpm
 str(keep)
 ```
 
-    ##  Named int [1:21960] 1 2 4 5 6 7 8 10 11 13 ...
-    ##  - attr(*, "names")= chr [1:21960] "AT1G01010" "AT1G01020" "AT1G01030" "AT1G01040" ...
+    ##  Named int [1:22043] 1 2 4 5 6 7 8 10 11 13 ...
+    ##  - attr(*, "names")= chr [1:22043] "AT1G01010" "AT1G01020" "AT1G01030" "AT1G01040" ...
 
 There are 21,960 genes that meet our requeriments
 
@@ -591,14 +595,14 @@ dim(dgList2)
 dim(dgList3)
 ```
 
-    ## [1] 21960    30
+    ## [1] 22043    30
 
 Now, let’s compare all samples pre and post filtering with a density
 plot. The following lines produce a density of log-CPM values for (A)
 raw pre-filtered data and (B) post-filtered data for each sample.
 
 Dotted vertical lines mark the log-CPM threshold that we use (cpm \>1).
-Samples are colored by time as it is represented in the legend.
+Samples are colored by time as it is represented on the legend.
 
 ``` r
 nsamples <- ncol(dgList)
@@ -629,7 +633,7 @@ for (i in 2:nsamples){
 legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig4-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig4-1.png" style="display: block; margin: auto;" />
 
 ### 5.2. EdgeR cutoff
 
@@ -665,13 +669,13 @@ dim(dgList2)
 dim(dgList3)
 ```
 
-    ## [1] 21960    30
+    ## [1] 22043    30
 
 ``` r
 dim(dgList4)
 ```
 
-    ## [1] 24007    30
+    ## [1] 22918    30
 
 Now, let’s compare all samples pre and post filtering with a density
 plot. The following lines produce a density of log-CPM values for (A)
@@ -713,22 +717,22 @@ for (i in 2:nsamples){
 legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig5-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig5-1.png" style="display: block; margin: auto;" />
 
 ## 6\. Data Exploration
 
 ### 6.1. edgeR MDS
 
 We can examine inter-sample relationships by producing a plot based on
-multidimensional scaling. More details of this kind of exploration in
-Session2… this is just an example. When an object of type DGEList is the
+multidimensional scaling. More details of this kind of exploration on
+Session4… this is just an example. When an object of type DGEList is the
 input of plotMDS function, the real called function is a modified
 version designed by edgeR team with real name “plotMDS.DGEList”. It
 convert the counts to log-cpm and pass these to the limma plotMDS
 function. There, distance between each pair of samples (columns) is the
 root-mean-square deviation (Euclidean distance) for the top genes.
 
-Distances in the plot can be interpreted as leading log2-fold-change,
+Distances on the plot can be interpreted as leading log2-fold-change,
 meaning the typical (root-mean-square) log2-fold-change between the
 samples for the genes that distinguish those samples.
 
@@ -747,7 +751,7 @@ plotMDS(dgList3, prior.count=1, col=Color, labels=dgList$metadata$Time, xlab = "
 title(main="B. Setting colors and labels")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig6-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig6-1.png" style="display: block; margin: auto;" />
 
 On panel A you see the samples ordination in MDS space. Did you see time
 groups?
@@ -796,7 +800,7 @@ plot(TreeC,
      ylab = "Height")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig7-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig7-1.png" style="display: block; margin: auto;" />
 
 We can select a tree “level” to obtain clusters. For example, at eight
 0.06 we will obtain 3 clusters
@@ -809,7 +813,7 @@ plot(TreeC,
 abline(h=0.04, lwd=2, col="pink") # 0.05=2groups, 0.04=3groups, 0.03=4groups
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig8-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig8-1.png" style="display: block; margin: auto;" />
 
 This is the commmand to cut the tree and save clusters
 
@@ -875,7 +879,7 @@ The cluster plot:
 plot(pv,print.num=FALSE, col.pv=pvcolors, cex.pv=0.8, main=paste("Cluster dendogram with 'Approximately Unbiased' values (%), bootstrap=", bootstrap))
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig9-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig9-1.png" style="display: block; margin: auto;" />
 
 The cluster plot selecting groups according to a specific alpha value
 
@@ -884,7 +888,7 @@ plot(pv,print.num=FALSE, col.pv=pvcolors, cex.pv=0.8, main=paste("Cluster dendog
 pvrect(pv, alpha=0.90, pv="au", type="geq", max.only=TRUE)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig10-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig10-1.png" style="display: block; margin: auto;" />
 
 Graph explanation: Two types of values are provided for the confidence
 of the nodes: AU (Approximately Unbiased) values and BP (Bootstrap
@@ -983,7 +987,7 @@ view solution summary… what’s the used model? what it means?
 fit
 ```
 
-    ## 'Mclust' model object: (EEI,3) 
+    ## 'Mclust' model object: (VEI,3) 
     ## 
     ## Available components: 
     ##  [1] "call"           "data"           "modelName"      "n"             
@@ -1004,9 +1008,9 @@ summary(fit$BIC)
 ```
 
     ## Best BIC values:
-    ##              EEI,3        VEI,3        VEI,5
-    ## BIC      -11949.91 -11964.03851 -11971.32663
-    ## BIC diff      0.00    -14.13279    -21.42092
+    ##              VEI,3        EEI,3       VEI,4
+    ## BIC      -12764.53 -12779.11137 -12943.2717
+    ## BIC diff      0.00    -14.58347   -178.7438
 
 Models and their score by component
 
@@ -1014,9 +1018,9 @@ Models and their score by component
 plot(fit$BIC) 
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig11-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig11-1.png" style="display: block; margin: auto;" />
 
-Classification vector that we could use in other plots, like PCA (next
+Classification vector that we could use on other plots, like PCA (next
 Sesion)
 
 ``` r
@@ -1054,11 +1058,20 @@ Setting a color pallete over red color:
 cimColor <- colorRampPalette(rev(brewer.pal(9, "Reds")))(20)
 ```
 
+Before to plot the next figure, expand the RStudio plot panel.
+
+> In general, if you receive a “margins too large” message, try to
+> expand the RStudio plot panel and try again.
+
+> Another solution for large figures is to execute a **x11()** command
+> before each plot. This will activate a new window where the next plot
+> will be diplayed.
+
 ``` r
-cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
+cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3, margins = c(0.5, 0.5))
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig12-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig12-1.png" style="display: block; margin: auto;" />
 
 What if we use cpm instead of pseudocount?
 
@@ -1068,14 +1081,14 @@ sampleDists <- as.matrix(dist(t(cpmCounts)), method = "cor")
 ```
 
 ``` r
-cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
+cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3, margins = c(0.5, 0.5))
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig13-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig13-1.png" style="display: block; margin: auto;" />
 
 Note that sample clustering is different when using pseudocounts or cpm.
 The distance between samples is sensible to the kind of data that you
-use and pseudocounts are different than cpm, as you see in panels C
+use and pseudocounts are different than cpm, as you see on the panel C
 and D of the first graph of data transformation section. Some people do
 prefer to use pseudocounts but the correct way is to use cpm
 (<https://www.biostars.org/p/165619/>).
@@ -1118,7 +1131,7 @@ length(design.matrix[1,]) #10 factors
     ## [1] 10
 
 Detail of factors and assigned samples: 30 rows for 30 samples. You can
-see a number “1” in the corresponding replicates of each sample. Note
+see a number “1” on the corresponding replicates of each sample. Note
 that **dgList3$samples$group0** is not present. As a time series, all
 factors will be compared against time0.
 
@@ -1259,7 +1272,7 @@ design.matrix # factors
 Another model option is to use **model.matrix(0\~ +
 dgList3$samples$group)**, but that’s not a time series analysis. That’s
 a matrix for paired comparisons (ie, control vs treatment) like will be
-used in next Session.
+used on next Session.
 
 A key strength of limma’s linear modelling approach, is the ability
 accommodate arbitrary experimental complexity. Simple designs, such cell
@@ -1300,7 +1313,7 @@ parameter in the negative binomial model.
 plotBCV(dgList3a)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig14-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig14-1.png" style="display: block; margin: auto;" />
 
 There is a function in EdgeR that merges the three previous commands
 but, the result is not the same therefore, we prefer the three step
@@ -1319,7 +1332,7 @@ plotBCV(dgList3b)
 title(main="B. one step")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig15-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig15-1.png" style="display: block; margin: auto;" />
 
 The trend is more realistic using “three steps” method. Finally, we
 choose to follow using that result
@@ -1365,13 +1378,13 @@ lrt <- glmLRT(fit,coef=6)
 head(lrt$table)
 ```
 
-    ##                 logFC    logCPM         LR      PValue
-    ## AT1G01010 -0.19399184 4.3925406 1.07094697 0.300731646
-    ## AT1G01020  0.03410815 3.7288930 0.04076184 0.839998327
-    ## AT1G01030 -0.24364836 1.5959491 0.93672082 0.333122592
-    ## AT1G01040 -0.17675448 6.4727504 2.00560721 0.156718530
-    ## AT1G03993 -0.84038901 2.5394185 7.11026405 0.007664382
-    ## AT1G01046 -0.06885899 0.2678951 0.05775410 0.810081547
+    ##                logFC    logCPM         LR      PValue
+    ## AT1G01010 -0.2026954 4.3646484 1.19714677 0.273892693
+    ## AT1G01020  0.0339595 3.7150330 0.04185692 0.837892753
+    ## AT1G01030 -0.2237841 1.6000858 0.87071276 0.350758061
+    ## AT1G01040 -0.1780170 6.4567675 2.10480894 0.146836683
+    ## AT1G03993 -0.8292579 2.6110069 7.45770623 0.006316544
+    ## AT1G01046 -0.1014080 0.4601438 0.13504169 0.713260865
 
 This result does not have FDR correction The following lines will add
 this correction using the function topTags
@@ -1382,13 +1395,13 @@ lrtFDR <- topTags(lrt, n = nrow(dgList3$counts))
 head(lrtFDR$table) 
 ```
 
-    ##               genes    logFC    logCPM       LR        PValue           FDR
-    ## AT3G49940 AT3G49940 7.725850  6.337054 613.1818 2.273577e-135 4.992775e-131
-    ## AT5G40850 AT5G40850 5.229407  9.389755 461.3782 2.409722e-102  2.645875e-98
-    ## AT5G63160 AT5G63160 4.444130  4.434650 422.3554  7.494779e-94  5.486178e-90
-    ## AT5G67420 AT5G67420 6.641651  7.683491 386.5701  4.619230e-86  2.535957e-82
-    ## AT2G15620 AT2G15620 6.544619 11.115728 384.3355  1.415987e-85  6.219016e-82
-    ## AT2G22200 AT2G22200 5.609249  2.896289 372.8157  4.561867e-83  1.669643e-79
+    ##               genes    logFC   logCPM       LR        PValue           FDR
+    ## AT3G49940 AT3G49940 7.728044 6.307248 647.1966 9.094910e-143 2.004791e-138
+    ## AT5G40850 AT5G40850 5.227322 9.356019 463.4374 8.587392e-103  9.464594e-99
+    ## AT4G37540 AT4G37540 8.859143 3.832665 425.8077  1.328463e-94  9.761103e-91
+    ## AT5G63160 AT5G63160 4.450219 4.399648 424.1120  3.107669e-94  1.712559e-90
+    ## AT5G67420 AT5G67420 6.640411 7.654433 395.7192  4.707948e-88  2.075546e-84
+    ## AT1G68670 AT1G68670 5.142652 4.610942 390.7073  5.806269e-87  2.133126e-83
 
 Now we included FDR correction :)
 
@@ -1399,7 +1412,7 @@ only a numerical significance… a confidence that two numbers are
 sufficiently different considering a distribution model. However, an
 important concept to keep in mind is the biological significance: having
 twice the concentration of transcripts (2X) is a starting point to
-filter out genes without a real impact over the phenotype. Of course,
+filter out genes without a real impact on the phenotype. Of course,
 there are some genes that with low increments will produce big changes.
 My advice is to fisrt evaluate final numbers of selected genes with the
 standard cutoff. This because downstream analysis don’t work well with
@@ -1412,7 +1425,7 @@ selectedLRT <- lrtFDR$table[selectedLRT.list, ]
 nrow(selectedLRT)
 ```
 
-    ## [1] 1040
+    ## [1] 1056
 
 “selectedLRT” is the list of genes with a expression pattern on “time
 30” that differ from the linear model.
@@ -1449,7 +1462,7 @@ selectedLRT210 <- lrt210FDR$table[selectedLRT210, ]
 nrow(selectedLRT210)
 ```
 
-    ## [1] 12074
+    ## [1] 12185
 
 Now, we can explore expression of selected DE genes of factor 6 using
 different plots.
@@ -1461,7 +1474,7 @@ plotSmear(lrt, de.tags = rownames(selectedLRT))
 abline(h=c(-1, 1), col=2)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig16-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig16-1.png" style="display: block; margin: auto;" />
 
 #### 7.3.2. Volcano plot of selected genes
 
@@ -1474,7 +1487,7 @@ abline(v=c(-1, 1), col=2)
 abline(h=-log10(0.05), col=2)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig17-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig17-1.png" style="display: block; margin: auto;" />
 
 #### 7.3.3. Heatmap of selected genes using cpm
 
@@ -1491,7 +1504,7 @@ finalHMr <- cim(t(cpmCounts.select), color = cimColor, symkey = FALSE, row.cex =
                col.cex = 0.7)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig19-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig19-1.png" style="display: block; margin: auto;" />
 
 Ploting a heatmap with “Samples as columns”
 
@@ -1500,7 +1513,7 @@ finalHMc <- cim(cpmCounts.select, color = cimColor, symkey = FALSE, row.cex = 0.
                col.cex = 1.5)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig20-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig20-1.png" style="display: block; margin: auto;" />
 
 #### 7.3.4. Some other heatmaps schemes
 
@@ -1510,7 +1523,7 @@ Default heatmap.2 output
 heatmap.2(cpmCounts.select)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig21-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig21-1.png" style="display: block; margin: auto;" />
 
 Scaling by genes (rows)… also known as z-score
 
@@ -1525,7 +1538,7 @@ heatmap.2(cpmCounts.select,scale="row", trace="none", cexRow = 0.8,
 )
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig22-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig22-1.png" style="display: block; margin: auto;" />
 
 Grouping samples by time with a distintive color
 
@@ -1536,7 +1549,7 @@ heatmap.2(cpmCounts.select,scale="row", trace="none", cexRow = 0.8,
 )
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig23-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig23-1.png" style="display: block; margin: auto;" />
 
 More options:
 
@@ -1565,23 +1578,23 @@ heatmap “finalHMr” (Section 7.3.3)
 plot(finalHMc$ddr, leaflab="none")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig24-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig24-1.png" style="display: block; margin: auto;" />
 
 The tree could be “cutted” at a desired level to obtain clusters. If we
-cut at 35%, we will produce 5 clusters
+cut at 40%, we will produce 4 clusters
 
 ``` r
 plot(finalHMc$ddr, leaflab="none")
-abline(h=35, lwd=2, col="pink")
+abline(h=40, lwd=2, col="pink")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig25-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig25-1.png" style="display: block; margin: auto;" />
 
 This is the commmand to cut the tree at the desired level and save
 clusters:
 
 ``` r
-geneClust <- cutree(as.hclust(finalHMc$ddr), h=35) # 50x3 35x5
+geneClust <- cutree(as.hclust(finalHMc$ddr), h=40) # 50x3 40x4 30x5
 ```
 
 Number of clusters
@@ -1590,7 +1603,7 @@ Number of clusters
 length(unique(geneClust))
 ```
 
-    ## [1] 5
+    ## [1] 4
 
 Listing gene names of cluster 2:
 
@@ -1598,44 +1611,51 @@ Listing gene names of cluster 2:
 names(which(geneClust == 2))
 ```
 
-    ##  [1] "AT5G40850" "AT2G15620" "AT5G41670" "AT1G77760" "AT5G50200" "AT4G05390"
-    ##  [7] "AT2G27510" "AT5G03380" "AT5G53460" "AT1G70780" "AT3G47520" "AT2G36580"
-    ## [13] "AT2G40140" "AT5G12860" "AT2G38170" "AT1G37130" "AT1G70410" "AT1G64140"
-    ## [19] "AT3G55980" "AT4G02380" "AT4G04125" "AT5G25350" "AT1G43710" "AT3G60750"
-    ## [25] "ATMG01390" "AT4G32020" "AT4G34135" "AT2G38470" "AT1G12110" "ATCG01210"
-    ## [31] "ATCG00920" "AT2G36530" "AT4G05320" "AT4G15550" "AT2G37040" "AT5G40450"
-    ## [37] "ATCG00280" "AT2G01021" "AT1G12940" "AT1G61800" "AT4G32940" "AT3G28510"
-    ## [43] "ATMG00020" "ATCG00270" "ATCG00900" "ATCG01240" "AT2G01020" "AT3G41979"
-    ## [49] "AT4G22495" "AT4G22505" "AT4G22475" "AT4G22485"
+    ##   [1] "AT5G40850" "AT5G67420" "AT2G15620" "AT1G35560" "AT5G41670" "AT5G09800"
+    ##   [7] "AT1G24280" "AT2G22500" "AT4G38340" "AT3G57450" "AT1G30510" "AT1G08657"
+    ##  [13] "AT1G77760" "AT5G50200" "AT4G05390" "AT5G13110" "AT2G27510" "AT1G63940"
+    ##  [19] "AT1G64190" "AT1G13000" "AT3G28690" "AT1G32920" "AT5G03380" "AT1G71980"
+    ##  [25] "AT5G53460" "AT1G70780" "AT3G47520" "AT2G36580" "AT2G40140" "AT4G36020"
+    ##  [31] "AT5G54170" "AT1G68550" "AT4G24020" "AT5G12860" "AT5G65010" "AT2G30590"
+    ##  [37] "AT2G38170" "AT1G37130" "AT1G70410" "AT1G64140" "AT3G55980" "AT1G63860"
+    ##  [43] "AT4G04125" "AT4G02380" "AT1G68840" "AT5G25350" "AT1G29400" "AT1G80325"
+    ##  [49] "AT2G29670" "AT1G80310" "AT5G53420" "AT1G43710" "AT5G65310" "AT3G24190"
+    ##  [55] "AT5G57660" "AT2G17820" "AT2G24600" "AT3G60750" "AT4G17090" "AT4G18700"
+    ##  [61] "AT5G14760" "AT1G25560" "AT2G32680" "AT2G31955" "AT4G05685" "AT1G08477"
+    ##  [67] "AT1G21110" "AT2G28890" "AT5G51830" "AT4G17550" "ATMG01390" "AT4G32020"
+    ##  [73] "AT1G51805" "AT4G34135" "AT3G17609" "AT2G38470" "AT1G12110" "AT1G62180"
+    ##  [79] "ATCG01210" "AT4G30350" "ATCG00920" "AT3G23030" "AT1G54130" "AT1G21120"
+    ##  [85] "AT2G36530" "AT4G05320" "AT4G15550" "AT4G24400" "AT4G17770" "AT1G66390"
+    ##  [91] "AT3G10420" "AT5G19240" "AT2G37040" "AT3G23920" "AT5G40450" "AT3G16150"
+    ##  [97] "AT3G25610" "AT4G11890" "AT4G12290" "ATCG00280" "AT2G01021" "AT4G27260"
+    ## [103] "AT1G12940" "AT1G61800" "AT1G74810" "AT4G32940" "AT1G74360" "AT5G57220"
+    ## [109] "AT3G28510" "ATMG00020" "ATCG00900" "ATCG00270" "ATCG01240" "AT2G01020"
+    ## [115] "AT3G41979" "AT3G06355" "AT1G28290" "AT2G16060" "AT5G42830" "AT4G22495"
+    ## [121] "AT4G22505" "AT5G03350" "AT4G22475" "AT4G22467" "AT5G20230" "AT4G22485"
+    ## [127] "AT4G22470"
 
-To know the number of genes in each cluster:
+To know the number of genes on each cluster:
 
 ``` r
 length(names(which(geneClust == 1)))
 ```
 
-    ## [1] 499
+    ## [1] 480
 
 ``` r
 length(names(which(geneClust == 2)))
 ```
 
-    ## [1] 52
+    ## [1] 127
 
 ``` r
 length(names(which(geneClust == 3)))
 ```
 
-    ## [1] 390
+    ## [1] 445
 
 ``` r
 length(names(which(geneClust == 4)))
-```
-
-    ## [1] 95
-
-``` r
-length(names(which(geneClust == 5)))
 ```
 
     ## [1] 4
@@ -1649,7 +1669,7 @@ will use cpm data.
 scaledata <- cpmCounts.select
 ```
 
-We need a function to obtain the mean expression in each sample of a
+We need a function to obtain the mean expression on each sample of a
 desired cluster:
 
 ``` r
@@ -1667,19 +1687,23 @@ cores <- sapply(unique(geneClust), clust.core, scaledata, geneClust)
 head(cores)
 ```
 
-    ##           [,1]     [,2]     [,3]      [,4]     [,5]
-    ## t0.r1 4.305324 8.043857 1.089193 -1.842164 14.20026
-    ## t0.r2 4.259310 8.098287 1.026089 -1.922748 14.45050
-    ## t0.r3 4.259639 8.196532 1.059627 -1.881147 15.12746
-    ## t5.r1 4.225494 7.822716 1.113468 -1.770136 13.17946
-    ## t5.r2 4.336090 7.783656 1.261457 -1.492072 12.89047
-    ## t5.r3 4.307237 7.815662 1.077194 -1.944021 12.99491
+    ##           [,1]     [,2]      [,3]     [,4]
+    ## t0.r1 3.836735 6.837619 0.4369388 14.38216
+    ## t0.r2 3.794091 6.823880 0.3822376 14.53585
+    ## t0.r3 3.762711 6.812320 0.4549936 15.22181
+    ## t5.r1 3.811902 6.764831 0.3792206 13.26071
+    ## t5.r2 3.892364 6.808391 0.5684919 12.94931
+    ## t5.r3 3.853511 6.838176 0.3392000 13.07987
 
 Now, we prepare the data frame
 
 ``` r
 d <- data.frame(cbind(dgList$metadata$Time,cores))
+#names <- rownames(d)
+#rownames(d) <- NULL
+#d <- cbind(names,d)
 colnames(d) <-c("time", paste0("clust_",1:ncol(cores)))
+
 #get the data frame into long format for plotting
 dmolten <- melt(d, id.vars = "time")
 #order by time
@@ -1700,7 +1724,7 @@ p0 <- ggplot(dmolten, aes(time, value, col=variable)) +
 p0
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig26-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig26-1.png" style="display: block; margin: auto;" />
 
 We can select a specific cluster to draw the expression of their genes.
 I will select cluster1
@@ -1738,7 +1762,7 @@ p1 <- ggplot(dClust1molten, aes(time, value, group=variable)) +
 p1
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig27-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig27-1.png" style="display: block; margin: auto;" />
 
 **All clusters**
 
@@ -1776,46 +1800,44 @@ return(p)
 p2 <- cluster_plot(scaledata, 2)
 p3 <- cluster_plot(scaledata, 3)
 p4 <- cluster_plot(scaledata, 4)
-p5 <- cluster_plot(scaledata, 5)
 ```
 
 Now, we are ready to plot all clusters:
 
 ``` r
+# Expand the RStudio plot panel before the plot
 grid.arrange(p0 + theme(legend.position = "none"),
              p1+ ylab(NULL),
              p2+ ylab(NULL),
              p3+ ylab(NULL),
              p4+ ylab(NULL),
-             p5+ ylab(NULL),
-             ncol=6)
+             ncol=5)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig28-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig28-1.png" style="display: block; margin: auto;" />
 
 Cool, but each graph have their own scale and they are not sorted. Look
 for the max and min axes value through the graphs to set global values.
 
 ``` r
 # Setting min a max limits of y axes based on all five plots
-ylim1=-6; ylim2=17
+ylim1=-5; ylim2=17
 ```
 
 Finally, sort the command lines of expression plots according to p0
 order and plot\!
 
 ``` r
-# don't forget to maximize the empty window before the plot
+# Expand the RStudio plot panel before the plot
 grid.arrange(p0 + ylim(ylim1, ylim2) + theme(legend.position = "none"),
-             p5 + ylim(ylim1, ylim2) + ylab(NULL), 
+             p4 + ylim(ylim1, ylim2) + ylab(NULL), 
              p2 + ylim(ylim1, ylim2) + ylab(NULL), 
              p1 + ylim(ylim1, ylim2) + ylab(NULL), 
              p3 + ylim(ylim1, ylim2) + ylab(NULL), 
-             p4 + ylim(ylim1, ylim2) + ylab(NULL), 
-             ncol=6)
+             ncol=5)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis.v2_files/figure-gfm/fig29-1.png" style="display: block; margin: auto;" />
+<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig29-1.png" style="display: block; margin: auto;" />
 
 #### 7.4.3. Saving results
 

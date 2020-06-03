@@ -1,7 +1,7 @@
 # Session 1 | Part 1 : RNA-Seq data preprocessing
 
 Before starting with these intructions, please watch this video: [Session1-RNAseq_Introduction](https://drive.google.com/open?id=1n-kHh7nw8iEld77rNf8mg3RX7fhNHOe8). 
-Also, don't forget to read and follow the [Requirements](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session1-Temporal_Analysis/1_Requirements.md) section.
+Also, don't forget to read and follow the [Requirements](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session1-Temporal_Analysis/1_Requirements.md) section.
 
 ### **Watch [this video](https://drive.google.com/file/d/104scpjSD8ZeEIcqTHo0JNqueY5RGxJdH/view?usp=sharing) for a more detailed explanation of the following pipeline**
 
@@ -128,7 +128,7 @@ Then, we save the counts and associated stats in tab delimited files:
 	>write.table(fc0$counts, "../fc0.counts.txt", sep="\t", col.names=NA, quote=F)
 	>write.table(fc0$stat, "../fc0.stat.txt", sep="\t", row.names=F, quote=F)
 
-Now, with **fc0.counts.txt** file you are ready to star the [RNAseq analysis pipeline in R](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session1-Temporal_Analysis/3_Pipeline-Gene_expression_analysis.md).
+Now, with **fc0.counts.txt** file you are ready to star the [RNAseq analysis pipeline in R](https://github.com/ibioChile/Transcriptomics-R-Workshop).
 
 ### 2.4 Rsubread: quantification in Windows
 
@@ -166,6 +166,6 @@ Follow "2.3 Rsubread: quantification" steps
     >write.table(fc0$counts, "../fc0.counts.txt", sep="\t", col.names=NA, quote=F)
     >write.table(fc0$stat, "../fc0.stat.txt", sep="\t", row.names=F, quote=F)
 
-Now, you can copy the **fc0.counts.txt** to your Windows filesystem and use it with Windows RStudio to follow the [RNAseq analysis pipeline in R](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session1-Temporal_Analysis/3_Pipeline-Gene_expression_analysis.md).
+Now, you can copy the **fc0.counts.txt** to your Windows filesystem and use it with Windows RStudio to follow the [RNAseq analysis pipeline in R](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session1-Temporal_Analysis).
 
     cp -r fc0.counts.txt /mnt/c/

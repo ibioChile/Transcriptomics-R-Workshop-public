@@ -1,4 +1,4 @@
-Sesion 3 | Part 2 : Gene expression analysis
+Sesion 1 | Part 2 : Gene expression analysis
 ================
 Jonathan Maldonado
 06/03/2020
@@ -40,7 +40,7 @@ setwd("~/iBio/workshop2020-iBio/S1")
 
 Start importing counts table and metadata associated to the samples
 (previously downloaded from
-[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session3:RNA-SeqI/Data)
+[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session1-Temporal_Analysis/Data/)
 folder).
 
 ``` r
@@ -725,7 +725,7 @@ legend("topright", title="time", unique(as.character(dgList$metadata$Time)), tex
 
 We can examine inter-sample relationships by producing a plot based on
 multidimensional scaling. More details of this kind of exploration on
-Session4… this is just an example. When an object of type DGEList is the
+Session2… this is just an example. When an object of type DGEList is the
 input of plotMDS function, the real called function is a modified
 version designed by edgeR team with real name “plotMDS.DGEList”. It
 convert the counts to log-cpm and pass these to the limma plotMDS
@@ -1855,7 +1855,7 @@ write.table(names(which(geneClust == 2)), "factor6.clust2.txt", sep="\t", quote 
 write.table(names(geneClust), "factor6.all.txt", sep="\t", quote = FALSE, row.names = F, col.names = F)
 ```
 
-## 8\. Session info
+## 8. Session info
 
 ``` r
 sessionInfo()

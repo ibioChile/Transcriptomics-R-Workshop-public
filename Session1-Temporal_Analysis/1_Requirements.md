@@ -6,7 +6,7 @@ For this session you will need a **Unix compatible system**, ie. MAC or Linux op
 
 Please read the [Workshop Setup](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Workshop%20Setup.md) document for more info.
 
-More info about how to use **Unix Shell** (command line) [can be found here](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Command%20line.md).
+More info about how to use **Unix Shell** (command line) [can be found here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Command%20line.md).
 
 ### **Watch [this video](https://drive.google.com/file/d/1GZbBg3DW284LVvTSucif0fhKskjvMr4X/view?usp=sharing) for a more detailed explanation of the following steps**
 
@@ -187,6 +187,6 @@ Furthermore, we need to download from TAIR, *Arabidopsis thaliana*'s genome and 
     wget ftp://ftp.ensemblgenomes.org/pub/release-34/plants/gtf/arabidopsis_thaliana/Arabidopsis_thaliana.TAIR10.34.gtf.gz
     gunzip *.gz
 
-With the previous steps we are ready to follow the [Data pre-processing instructions](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session1-Temporal_Analysis/2_Pipeline-Data_preprocessing.md).
+With the previous steps we are ready to follow the [Data pre-processing instructions](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session1-Temporal_Analysis/2_Pipeline-Data_preprocessing.md).
 
 <END>

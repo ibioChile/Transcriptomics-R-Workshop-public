@@ -19,7 +19,7 @@ We will not use the original files for this session, but if you'd like to start 
   | ```004/SRR5440804``` | Shoot | KCl  | 2 | 120 |
   | ```005/SRR5440795``` | Shoot | KCl  | 3 | 120 |
 
-Following the **Data Preprocessing** tutorial from Session 1, we generated a counts table from these files. You can download it [here](https://github.com/ibioChile/Transcriptomics-R-Workshop/blob/master/Session2-Treatment_and_Multivariate/Data/fc0.original.counts.session2-1.txt). 
+Following the **Data Preprocessing** tutorial from Session 1, we generated a counts table from these files. You can download it [here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/Data/fc0.original.counts.session2-1.txt). 
 
 The associated metadata can be found [here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/Data/metadata_session2-1.txt).
 

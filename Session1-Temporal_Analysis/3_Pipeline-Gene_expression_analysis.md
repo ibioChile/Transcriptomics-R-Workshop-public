@@ -1009,8 +1009,8 @@ summary(fit$BIC)
 
     ## Best BIC values:
     ##              VEI,3        EEI,3       VEI,4
-    ## BIC      -12764.53 -12779.11137 -12943.2717
-    ## BIC diff      0.00    -14.58347   -178.7438
+    ## BIC      -11691.58 -11707.58661 -11795.0858
+    ## BIC diff      0.00    -16.00405   -103.5032
 
 Models and their score by component
 
@@ -1061,14 +1061,14 @@ cimColor <- colorRampPalette(rev(brewer.pal(9, "Reds")))(20)
 Before to plot the next figure, expand the RStudio plot panel.
 
 > In general, if you receive a “margins too large” message, try to
-> expand the RStudio plot panel and try again.
+> expand the RStudio plot panel and use the **dev.off()** command to
+> reset the plot device. Then, try again the plot.
 
-> Another solution for large figures is to execute a **x11()** command
-> before each plot. This will activate a new window where the next plot
-> will be diplayed.
+> See alternative solutions [on this
+> link](https://github.com/jomaldon/tips/blob/master/R-margins_too_large_problem.md)
 
 ``` r
-cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3, margins = c(0.5, 0.5))
+cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
 ```
 
 <img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig12-1.png" style="display: block; margin: auto;" />
@@ -1081,7 +1081,7 @@ sampleDists <- as.matrix(dist(t(cpmCounts)), method = "cor")
 ```
 
 ``` r
-cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3, margins = c(0.5, 0.5))
+cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
 ```
 
 <img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig13-1.png" style="display: block; margin: auto;" />

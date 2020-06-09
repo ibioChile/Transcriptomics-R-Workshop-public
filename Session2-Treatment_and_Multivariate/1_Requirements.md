@@ -156,3 +156,18 @@ The original files and can be found here:
 Following the **Data Preprocessing** tutorial from Session 1, we generated a counts table located [here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/Data/fc0.original.counts.session2-2.txt). 
 
 The associated metadata can be found [here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/Data/metadata_session2-2.txt).
+
+### Install ViSEAGO in R versions = 3.6.1 (or any incompatible version)
+
+In your terminal, clone ViSEAGO repository:
+
+    git clone https://forgemia.inra.fr/umr-boa/viseago.git
+    
+From R console:
+
+    >BiocManager::install(c("BiocStyle","heatmaply","plotly","webshot","GOSemSim","DiagrammeR"))
+    # build package 
+    >devtools::build("/Users/pamelacamejo/viseago/") # Use path where you clone the ViSEAGO repo
+    # install package
+    >install.packages("/Users/pamelacamejo/ViSEAGO_1.3.5.tar.gz", repos = NULL, type = "source") # Use path where you build package
+    >library(ViSEAGO)

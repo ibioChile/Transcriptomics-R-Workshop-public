@@ -157,7 +157,7 @@ Following the **Data Preprocessing** tutorial from Session 1, we generated a cou
 
 The associated metadata can be found [here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session2-Treatment_and_Multivariate/Data/metadata_session2-2.txt).
 
-### Install ViSEAGO in R versions = 3.6.1 (or any incompatible version)
+### Install ViSEAGO in R versions = 3.6.1 (or any incompatible version). This package will work only on R version 3.6 or superior.
 
 In your terminal, clone ViSEAGO repository:
 
@@ -165,9 +165,15 @@ In your terminal, clone ViSEAGO repository:
     
 From R console:
 
+    # Install some required packages
     >BiocManager::install(c("BiocStyle","heatmaply","plotly","webshot","GOSemSim","DiagrammeR"))
-    # build package 
+    >BiocManager::install(c("AnnotationForge","biomaRt","dynamicTreeCut","topGO","R.utils","UpSetR"))
+    >install.packages("devtools")
+    # Download and install rtools version 4.0 or superior in your operating system
+    MACOSX http://mirror1.ku.ac.th/cran/bin/macosx/
+    Windows http://mirror1.ku.ac.th/cran/bin/windows/Rtools/
+    # Return to R and build the package
     >devtools::build("/Users/pamelacamejo/viseago/") # Use path where you clone the ViSEAGO repo
-    # install package
+    # install the package
     >install.packages("/Users/pamelacamejo/ViSEAGO_1.3.5.tar.gz", repos = NULL, type = "source") # Use path where you build package
     >library(ViSEAGO)

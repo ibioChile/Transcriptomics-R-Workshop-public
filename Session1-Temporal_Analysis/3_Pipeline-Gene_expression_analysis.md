@@ -1,4 +1,4 @@
-Sesion 1 | Part 2 : Gene expression analysis
+Sesion 3 | Part 2 : Gene expression analysis
 ================
 Jonathan Maldonado
 06/03/2020
@@ -30,17 +30,19 @@ library(matrixStats)
 ```
 
 Don’t forget to set the working directory right were your downloaded
-files are.
+files are. If you have previous RData file (from a previous session),
+use the *load* command to load the session.
 
 ``` r
 setwd("~/iBio/workshop2020-iBio/S1")
+#load("3_Pipeline-Gene_expression_analysis.RData")
 ```
 
 ## 1\. Importing and formatting data
 
 Start importing counts table and metadata associated to the samples
 (previously downloaded from
-[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session1-Temporal_Analysis/Data/)
+[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session3:RNA-SeqI/Data)
 folder).
 
 ``` r
@@ -725,7 +727,7 @@ legend("topright", title="time", unique(as.character(dgList$metadata$Time)), tex
 
 We can examine inter-sample relationships by producing a plot based on
 multidimensional scaling. More details of this kind of exploration on
-Session2… this is just an example. When an object of type DGEList is the
+Session4… this is just an example. When an object of type DGEList is the
 input of plotMDS function, the real called function is a modified
 version designed by edgeR team with real name “plotMDS.DGEList”. It
 convert the counts to log-cpm and pass these to the limma plotMDS
@@ -852,7 +854,8 @@ for a quick result, but change it to 100 or even 1000 for the final
 figure (and meanwhile go for a coffee cup).
 
 ``` r
-bootstrap <- 99
+bootstrap <- 100
+set.seed(123) # Set the seed of R‘s random number generator, which is useful for creating reproducible simulations or random objects.
 pv <- pvclust(cpm(dgList3, log=TRUE, prior.count=1), method.dist="cor", method.hclust="average", nboot=bootstrap)
 ```
 
@@ -987,7 +990,7 @@ view solution summary… what’s the used model? what it means?
 fit
 ```
 
-    ## 'Mclust' model object: (VEI,3) 
+    ## 'Mclust' model object: (VEI,4) 
     ## 
     ## Available components: 
     ##  [1] "call"           "data"           "modelName"      "n"             
@@ -1008,9 +1011,9 @@ summary(fit$BIC)
 ```
 
     ## Best BIC values:
-    ##              VEI,3        EEI,3       VEI,4
-    ## BIC      -11691.58 -11707.58661 -11795.0858
-    ## BIC diff      0.00    -16.00405   -103.5032
+    ##              VEI,4       EEI,3      VEI,3
+    ## BIC      -11771.87 -11904.3498 -11904.926
+    ## BIC diff      0.00   -132.4809   -133.057
 
 Models and their score by component
 
@@ -1033,23 +1036,22 @@ Number of clusters
 levels(group)
 ```
 
-    ## [1] "1" "2" "3"
+    ## [1] "1" "2" "3" "4"
 
-### 6.3. Heatmap of samples distance using mixOmics package
+### 6.3. Heatmap of samples correlation using mixOmics package
 
 We can examine inter-sample relationships by producing heatmap of
-samples distance.
+samples correlation.
 
 There are several functions to do a Heatmaps in R. Here we will use cim
 function that comes with the package mixOmics.
 
-First, we need to calculate the distance between samples. The function
-“dist” could do this job using different methods, but let’s start with
-a correlation distance over pseudocounts.
+First, we need to calculate the correlation between sample using the
+*cor* function function.
 
 ``` r
 Log2_pseudoCounts <- log2(dgList3$counts+1)
-sampleDists <- as.matrix(dist(t(Log2_pseudoCounts)), method = "cor")
+sampleDists <- as.matrix(cor(Log2_pseudoCounts))
 ```
 
 Setting a color pallete over red color:
@@ -1077,7 +1079,7 @@ What if we use cpm instead of pseudocount?
 
 ``` r
 cpmCounts <- cpm(dgList3, log=TRUE, prior.count = 1)
-sampleDists <- as.matrix(dist(t(cpmCounts)), method = "cor")
+sampleDists <- as.matrix(cor(cpmCounts))
 ```
 
 ``` r
@@ -1086,11 +1088,11 @@ cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
 
 <img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig13-1.png" style="display: block; margin: auto;" />
 
-Note that sample clustering is different when using pseudocounts or cpm.
-The distance between samples is sensible to the kind of data that you
-use and pseudocounts are different than cpm, as you see on the panel C
-and D of the first graph of data transformation section. Some people do
-prefer to use pseudocounts but the correct way is to use cpm
+Note that sample clustering could be different when using pseudocounts
+or cpm. The correlation between samples is sensible to the kind of data
+that you use and pseudocounts are different than cpm, as you see on the
+panel C and D of the first graph of data transformation section. Some
+people do prefer to use pseudocounts but the correct way is to use cpm
 (<https://www.biostars.org/p/165619/>).
 
 ## 7\. Lineal model
@@ -1433,16 +1435,16 @@ nrow(selectedLRT)
 The following are the number of genes calculated for each coeficient of
 the design matrix and what they represent.
 
-1 21960 \# Intercept  
-2 87 \# time 5  
-3 210 \# time 10  
-4 524 \# time 15  
-5 636 \# time 20  
-6 1040 \# time 30  
-7 2148 \# time 45  
-8 1867 \# time 60  
-9 3448 \# time 90  
-10 3278 \# time 120
+1 22043 \# Intercept  
+2 86 \# time 5  
+3 220 \# time 10  
+4 533 \# time 15  
+5 654 \# time 20  
+6 1056 \# time 30  
+7 2208 \# time 45  
+8 1886 \# time 60  
+9 3471 \# time 90  
+10 3313 \# time 120
 
 Other options to choose are a mix of factors (times).  
 For example, from factor 2 to factor 10 (time 2 to time 120): This would
@@ -1855,13 +1857,13 @@ write.table(names(which(geneClust == 2)), "factor6.clust2.txt", sep="\t", quote 
 write.table(names(geneClust), "factor6.all.txt", sep="\t", quote = FALSE, row.names = F, col.names = F)
 ```
 
-## 8. Session info
+## 8\. Session info (and data saving)
 
 ``` r
 sessionInfo()
 ```
 
-    ## R version 3.5.3 (2019-03-11)
+    ## R version 3.6.3 (2020-02-29)
     ## Platform: x86_64-w64-mingw32/x64 (64-bit)
     ## Running under: Windows 10 x64 (build 18363)
     ## 
@@ -1877,21 +1879,25 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] matrixStats_0.56.0 mclust_5.4.6       gplots_3.0.3       reshape2_1.4.4    
-    ##  [5] mixOmics_6.6.2     lattice_0.20-38    MASS_7.3-51.5      RColorBrewer_1.1-2
-    ##  [9] gridExtra_2.3      ggplot2_3.3.0      pvclust_2.2-0      dplyr_0.8.5       
-    ## [13] knitr_1.28         edgeR_3.24.3       limma_3.38.3      
+    ##  [5] mixOmics_6.8.5     lattice_0.20-41    MASS_7.3-51.6      RColorBrewer_1.1-2
+    ##  [9] gridExtra_2.3      ggplot2_3.3.2      pvclust_2.2-0      dplyr_1.0.0       
+    ## [13] knitr_1.28         edgeR_3.26.8       limma_3.40.6      
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtools_3.8.2       tidyselect_1.0.0   locfit_1.5-9.4     xfun_0.13         
-    ##  [5] purrr_0.3.4        splines_3.5.3      colorspace_1.4-1   vctrs_0.2.4       
-    ##  [9] htmltools_0.4.0    yaml_2.2.1         rlang_0.4.5        pillar_1.4.3      
-    ## [13] glue_1.4.0         withr_2.2.0        lifecycle_0.2.0    plyr_1.8.6        
-    ## [17] stringr_1.4.0      munsell_0.5.0      gtable_0.3.0       caTools_1.17.1.2  
-    ## [21] evaluate_0.14      labeling_0.3       parallel_3.5.3     highr_0.8         
-    ## [25] rARPACK_0.11-0     Rcpp_1.0.4.6       KernSmooth_2.23-15 corpcor_1.6.9     
-    ## [29] scales_1.1.0       gdata_2.18.0       farver_2.0.3       RSpectra_0.16-0   
-    ## [33] ellipse_0.4.1      digest_0.6.25      stringi_1.4.6      grid_3.5.3        
-    ## [37] tools_3.5.3        bitops_1.0-6       magrittr_1.5       tibble_3.0.1      
-    ## [41] crayon_1.3.4       tidyr_1.0.2        pkgconfig_2.0.3    ellipsis_0.3.0    
-    ## [45] Matrix_1.2-18      assertthat_0.2.1   rmarkdown_2.1      R6_2.4.1          
-    ## [49] igraph_1.2.5       compiler_3.5.3
+    ##  [1] gtools_3.8.2       tidyselect_1.1.0   locfit_1.5-9.4     xfun_0.14         
+    ##  [5] purrr_0.3.4        splines_3.6.3      colorspace_1.4-1   vctrs_0.3.1       
+    ##  [9] generics_0.0.2     htmltools_0.4.0    yaml_2.2.1         rlang_0.4.6       
+    ## [13] pillar_1.4.4       glue_1.4.1         withr_2.2.0        lifecycle_0.2.0   
+    ## [17] plyr_1.8.6         stringr_1.4.0      munsell_0.5.0      gtable_0.3.0      
+    ## [21] caTools_1.18.0     evaluate_0.14      labeling_0.3       parallel_3.6.3    
+    ## [25] highr_0.8          rARPACK_0.11-0     Rcpp_1.0.4.6       KernSmooth_2.23-17
+    ## [29] corpcor_1.6.9      scales_1.1.1       gdata_2.18.0       farver_2.0.3      
+    ## [33] RSpectra_0.16-0    ellipse_0.4.2      digest_0.6.25      stringi_1.4.6     
+    ## [37] grid_3.6.3         tools_3.6.3        bitops_1.0-6       magrittr_1.5      
+    ## [41] tibble_3.0.1       crayon_1.3.4       tidyr_1.1.0        pkgconfig_2.0.3   
+    ## [45] ellipsis_0.3.1     Matrix_1.2-18      rmarkdown_2.3      R6_2.4.1          
+    ## [49] igraph_1.2.5       compiler_3.6.3
+
+``` r
+#save.image(file = "3_Pipeline-Gene_expression_analysis.RData")
+```

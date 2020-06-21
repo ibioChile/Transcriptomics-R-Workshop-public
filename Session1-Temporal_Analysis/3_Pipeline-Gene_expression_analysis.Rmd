@@ -1,5 +1,5 @@
 ---
-title: "Sesion 1 | Part 2 : Gene expression analysis"
+title: "Sesion 3 | Part 2 : Gene expression analysis"
 author: "Jonathan Maldonado"
 date: "06/03/2020"
 output: rmarkdown::github_document
@@ -30,15 +30,16 @@ library(mclust)
 library(matrixStats)
 ```
 
-Don't forget to set the working directory right were your downloaded files are.
+Don't forget to set the working directory right were your downloaded files are. If you have previous RData file (from a previous session), use the *load* command to load the session.
 
 ```{r}
 setwd("~/iBio/workshop2020-iBio/S1")
+#load("3_Pipeline-Gene_expression_analysis.RData")
 ```
 
 ## 1. Importing and formatting data
 
-Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session1-Temporal_Analysis/Data/).
+Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session3:RNA-SeqI/Data) folder).
 
 ```{r}
 counts <- read.table("fc0.counts_original.txt")
@@ -360,7 +361,7 @@ legend("topright", title="time", unique(as.character(dgList$metadata$Time)), tex
 
 ### 6.1. edgeR MDS
 
-We can examine inter-sample relationships by producing a plot based on multidimensional scaling. More details of this kind of exploration on Session2... this is just an example. When an object of type DGEList is the input of plotMDS function, the real called function is a modified version designed by edgeR team with real name "plotMDS.DGEList". It convert the counts to log-cpm and pass these to the limma plotMDS function. There, distance between each pair of samples (columns) is the root-mean-square deviation (Euclidean distance) for the top genes.
+We can examine inter-sample relationships by producing a plot based on multidimensional scaling. More details of this kind of exploration on Session4... this is just an example. When an object of type DGEList is the input of plotMDS function, the real called function is a modified version designed by edgeR team with real name "plotMDS.DGEList". It convert the counts to log-cpm and pass these to the limma plotMDS function. There, distance between each pair of samples (columns) is the root-mean-square deviation (Euclidean distance) for the top genes.
 
 Distances on the plot can be interpreted as leading log2-fold-change, meaning the typical (root-mean-square) log2-fold-change between the samples for the genes that distinguish those samples.
 
@@ -454,7 +455,8 @@ More info about pvclust:
 On this variable we will set the bootstrap value. You can set it to 10 for a quick result, but change it to 100 or even 1000 for the final figure (and meanwhile go for a coffee cup).
 
 ```{r pvclust}
-bootstrap <- 99
+bootstrap <- 100
+set.seed(123) # Set the seed of R‘s random number generator, which is useful for creating reproducible simulations or random objects.
 pv <- pvclust(cpm(dgList3, log=TRUE, prior.count=1), method.dist="cor", method.hclust="average", nboot=bootstrap)
 ```
 
@@ -562,17 +564,17 @@ Number of clusters
 levels(group)
 ```
 
-### 6.3. Heatmap of samples distance using mixOmics package
+### 6.3. Heatmap of samples correlation using mixOmics package
 
-We can examine inter-sample relationships by producing heatmap of samples distance.
+We can examine inter-sample relationships by producing heatmap of samples correlation.
 
 There are several functions to do a Heatmaps in R. Here we will use cim function that comes with the package mixOmics.
 
-First, we need to calculate the distance between samples. The function "dist" could do this job using different methods, but let's start with a correlation distance over pseudocounts.
+First, we need to calculate the correlation between sample using the *cor* function function.
 
 ```{r}
 Log2_pseudoCounts <- log2(dgList3$counts+1)
-sampleDists <- as.matrix(dist(t(Log2_pseudoCounts)), method = "cor")
+sampleDists <- as.matrix(cor(Log2_pseudoCounts))
 ```
 
 Setting a color pallete over red color:
@@ -596,14 +598,14 @@ What if we use cpm instead of pseudocount?
 
 ```{r}
 cpmCounts <- cpm(dgList3, log=TRUE, prior.count = 1)
-sampleDists <- as.matrix(dist(t(cpmCounts)), method = "cor")
+sampleDists <- as.matrix(cor(cpmCounts))
 ```
 
 ```{r fig13, fig.align="center", dpi=300, fig.height=6, fig.width=12}
 cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
 ```
 
-Note that sample clustering is different when using pseudocounts or cpm. The distance between samples is sensible to the kind of data that you use and pseudocounts are different than cpm, as you see on the panel C and D of the first graph of data transformation section. Some people do prefer to use pseudocounts but the correct way is to use cpm (https://www.biostars.org/p/165619/).
+Note that sample clustering could be different when using pseudocounts or cpm. The correlation between samples is sensible to the kind of data that you use and pseudocounts are different than cpm, as you see on the panel C and D of the first graph of data transformation section. Some people do prefer to use pseudocounts but the correct way is to use cpm (https://www.biostars.org/p/165619/).
 
 ## 7. Lineal model
 
@@ -730,16 +732,16 @@ nrow(selectedLRT)
 
 The following are the number of genes calculated for each coeficient of the design matrix and what they represent.
 
-1 21960 # Intercept  
-2 87    # time 5  
-3 210   # time 10  
-4 524   # time 15  
-5 636   # time 20  
-6 1040  # time 30  
-7 2148  # time 45  
-8 1867  # time 60  
-9 3448  # time 90  
-10 3278 # time 120
+1 22043 # Intercept  
+2 86    # time 5  
+3 220   # time 10  
+4 533   # time 15  
+5 654   # time 20  
+6 1056  # time 30  
+7 2208  # time 45  
+8 1886  # time 60  
+9 3471  # time 90  
+10 3313 # time 120
 
 Other options to choose are a mix of factors (times).  
 For example, from factor 2 to factor 10 (time 2 to time 120):
@@ -1053,8 +1055,9 @@ write.table(names(which(geneClust == 2)), "factor6.clust2.txt", sep="\t", quote 
 write.table(names(geneClust), "factor6.all.txt", sep="\t", quote = FALSE, row.names = F, col.names = F)
 ```
 
-## 8. Session info
+## 8. Session info (and data saving)
 
 ```{r}
 sessionInfo()
+#save.image(file = "3_Pipeline-Gene_expression_analysis.RData")
 ```

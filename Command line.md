@@ -8,7 +8,6 @@ If you need help navigation around your computer using a terminal, checkout the 
 2. [Navigating Files and Directories](https://swcarpentry.github.io/shell-novice/02-filedir/index.html)
 3. [Working With Files and Directories](https://swcarpentry.github.io/shell-novice/03-create/index.html)
 4. [Shell Scripts](https://swcarpentry.github.io/shell-novice/06-script/index.html)
-5. [Workshop iBio II: Session 1, Linux](http://www.ibio.cl/wp-content/uploads/Introducción_a_Linux_Bash.v1.pptx). 
-6. [Useful commands](https://github.com/jomaldon/tips/blob/master/BashCommands.md)
+5. [Useful commands](https://github.com/jomaldon/tips/blob/master/BashCommands.md)
 
 We encourage you to follow these tutorial, since we will use many of these commands during Session 1.

@@ -1,0 +1,1063 @@
+---
+title: "Session 2 | Gene expression analysis"
+author: "Jonathan Maldonado"
+date: "06/03/2020"
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "~/iBio/workshop2020-iBio/S1/")
+```
+
+Following the former pipeline, we were able to obtain a table with read counts per gene of Arabidopsis. That table was generated using the reduced version of the original sequencing files. For this pipeline, we will use a similar file, containing gene counts obtained from the analysis of the original .fastq files.
+
+Open R Studio (or just R) and load the following libraries.
+Load each library **one at a time** to be sure that the library is installed on your system. Otherwise, remember to use BiocManager::install("packagename").
+
+```{r message=FALSE}
+library(edgeR)
+library(knitr)
+library(dplyr)
+library(pvclust)
+library(ggplot2)
+require(gridExtra)
+library(RColorBrewer)
+library(mixOmics)
+library(reshape2)
+library(gplots)
+library(mclust)
+library(matrixStats)
+```
+
+Don't forget to set the working directory right were your downloaded files are. If you have previous RData file (from a previous session), use the *load* command to load the session.
+
+```{r}
+setwd("~/iBio/workshop2020-iBio/S1")
+#load("3_Pipeline-Gene_expression_analysis.RData")
+```
+
+## 1. Importing and formatting data
+
+Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop/tree/master/Session2-Temporal_Analysis/Data) folder).
+
+```{r}
+counts <- read.table("fc0.counts_original.txt")
+metadata <- read.table("metadata.txt", header=TRUE)
+kable(head(metadata))
+```
+
+We will fix the header of counts leaving only the sample ID.
+
+```{r}
+colnames(counts) <- sapply(strsplit(colnames(counts),".",fixed=TRUE), `[`, 1)
+kable(head(counts))
+```
+
+This is a time-series data so, it would be good that samples order follows the time-series.
+
+```{r}
+metadata <- metadata %>% arrange(Time)
+counts <- counts[,metadata$Sample]
+dim(counts)
+```
+>This table has 30 samples and 32,833 genes.
+
+## 2. Creating the edgeR object 
+
+To create the edgeR object we need the counts. Optionally we can group samples by a factor. We will group samples by time.
+
+```{r}
+dgList <- DGEList(counts=counts, genes=rownames(counts), group=metadata$Time)
+```
+
+Take a look to the created object. It contains data for $counts, $samples and $genes.
+```{r}
+dgList
+```
+
+A more detailed view on $samples will show you that they are grouped, as expected.
+
+```{r}
+kable(dgList$samples)
+kable(head(dgList$counts)) # segment of the table
+```
+
+We can add metadata to the edgeR object to use it directly
+
+```{r}
+dgList$metadata <- metadata
+```
+
+Now, take a look to the object and you will see a new variable called $metadata at the end
+```{r}
+dgList
+```
+
+Samples names are not informative. Let's transform them to a more informative form.
+
+Set a vector with the new names and apply them to our data
+
+```{r}
+ColRename <- paste(paste0(rep("t",30),dgList$metadata[,"Time"]),paste0(rep("r",30),dgList$metadata[,"Replicate"]),sep=".")
+colnames(dgList) <- ColRename
+```
+
+Now, review your new names
+
+```{r}
+dgList$samples
+```
+
+## 3. Data normalization
+
+During the sample preparation or sequencing process, external factors that are not of biological interest can affect the expression of individual samples. For example, samples processed in the first batch of an experiment can have higher expression overall when compared to samples processed in a second batch. It is assumed that all samples should have a similar range and distribution of expression values. Normalisation is required to ensure that the expression distributions of each sample are similar across the entire experiment.
+
+Any plot showing the per sample expression distributions, such as a density or boxplot, is useful in determining whether any samples are dissimilar to others. Distributions of log-CPM values are similar throughout all samples within this dataset.
+
+Nonetheless, normalisation by the method of trimmed mean of M-values (TMM) (Robinson and Oshlack 2010) is performed using the calcNormFactors function in edgeR (but you could use others like upperquartile. The normalisation # factors calculated here are used as a scaling factor for the library sizes. When working with DGEList-objects, these normalisation factors are automatically stored in x$samples$norm.factors. For this dataset the effect of TMM-normalisation is mild, as evident in the magnitude of the scaling factors, which are all relatively close to 1.
+
+More info on this command:
+
+```{r, eval=F}
+?calcNormFactors
+```
+
+We will create a new edgeR object with the normalization
+
+```{r}
+dgList2 <- calcNormFactors(dgList, method="TMM")
+```
+
+Now let's compare the samples on both variables
+
+```{r}
+head(dgList$samples)
+head(dgList2$samples)
+```
+
+The column $norm.factors is different. As expected, the calcNormFactors function fill those values according to the chosen method.
+
+```{r}
+dgList$samples$norm.factors
+dgList2$samples$norm.factors
+```
+
+Let's see the normalization results with a boxplot
+
+>To ensure a good visualization I will use a data transformation called "cpm" from "counts per million" and log2. This will be profundized on the next section.
+
+```{r fig1, fig.align="center", dpi=300, fig.height=4, fig.width=12}
+
+Color <- c("#FFC900", "#FFB900","#FFA800", "#FF9200", "#FF7700","#FF5D00","#FF4300","#FF2900","#FF0000","#E40000")[as.factor(metadata$Time)]
+
+par(mfrow=c(1,2))
+# plot of unnormalised data
+cldgList <- cpm(dgList, log=TRUE, prior.count = 1)
+boxplot(cldgList, las=2, col=Color, main="")
+title(main="A. Unnormalised data",ylab="Log2-cpm")
+
+# plot of normalised data
+cldgList2 <- cpm(dgList2, log=TRUE, prior.count = 1)
+boxplot(cldgList2, las=2, col=Color, main="")
+title(main="B. Normalised data",ylab="Log2-cpm")
+```
+
+Did you see the difference? (hint: compare the median and the upper quartile). From now on, we will work with normalized data.
+
+## 4. Data transformation for visualization
+
+Count data has a has a broad spectrum of distribution, from genes with zero count to genes with thousands.
+
+Plot the following boxplots:
+
+```{r fig2, fig.align="center", dpi=350, fig.height=4, fig.width=12, warning=FALSE}
+
+par(mfrow=c(1,4)) #Figure2
+boxplot(dgList$counts, las=2, col=as.matrix(Color), main="")
+title(main="A. Untransformed data",ylab="original data")
+
+Log2 <- log2(dgList2$counts)
+Log2_pseudoCounts <- log2(dgList2$counts+1)
+cpmCounts <- cpm(dgList2, log=TRUE, prior.count = 1)
+
+boxplot(Log2, las=2, col=as.matrix(Color), main="")
+title(main="B. Log2 transformation",ylab="Log2")
+
+boxplot(Log2_pseudoCounts, las=2, col=as.matrix(Color), main="")
+title(main="C. Log2(x+1) (pseudoCounts)",ylab="pLog2")
+
+boxplot(cpmCounts, las=2, col=as.matrix(Color), main="")
+title(main="D. cpm with log2 and 0=1",ylab="pLog2(cpm)")
+```
+
+As you can see on panel A, the most datapoints are sticked to the x bar due that the majority of genes having low count values. A way to "see all the datapoints" is to apply a data transformation. In panel B, a log2 transformation was applied. However, since log2 function can't deal with "zero" counts, those samples are lost in the graph. This is not a problem in a boxplot representation but could be a problem for scatter plots or density plots.
+
+A trick to avoid this issue is to add 1 count to all samples. This is known as "pseudocount" transformation, which is applied in panel C.
+
+Panel D shows cpm transformation, which is another kind of data manipulation, where data is divided by the total number of counts and normalized by 1 million. cpm(x) = (x/sum(x))*1000000. Then, "only zeros" are transformed to 1 (0=1) and log2 transformation can be applied.
+
+We can check the distribution of a specific sample using the *hist* function;
+
+```{r fig3, fig.align="center", dpi=300, fig.height=4, fig.width=12}
+par(mfrow=c(1,4))
+hist(dgList2$counts[,"t0.r2"],col="lightblue", main="A. Untransf data")
+hist(Log2[,"t0.r2"],col="lightblue", main="B. Log2 transf")
+hist(Log2_pseudoCounts[,"t0.r2"],col="lightblue", main="C. Log2_pseudoCounts")
+hist(cpmCounts[,"t0.r2"],col="lightblue", main="D. cpm+log2+pseudocounts")
+```
+
+Take a look at the peak at zero, which is lost on the Log2 graph.
+
+## 5. Gene filtering
+
+How many genes are not expressed over all samples?
+
+```{r}
+kable(table(rowSums(dgList2$counts==0)==30))
+```
+
+There are 32,833 genes in this dataset. However, many of them are not expressed or are not represented by enough reads to contribute to the analysis. Removing those genes means that we ultimately have fewer tests to perform, thereby reducing problems associated with multiple testing.
+
+Here, we present two ways to do perform  counts filtering.
+
+### 5.1. Manual cutoff
+
+We will retain only those genes that are represented by at least 1 cpm in at least two samples.
+
+Calculate the cpm
+
+```{r}
+countsPerMillion <- cpm(dgList2)
+```
+
+Let's compare pre and post cpm for the first sample
+
+```{r}
+summary(dgList2$counts[,1])
+summary(countsPerMillion[,1]) #first sample (t0.r1)
+```
+
+What's the difference?... Let's found what cells of the matrix have a cpm count above 1
+
+```{r}
+countCheck <- countsPerMillion > 1
+kable(head(countCheck))
+```
+
+Now, sum the "TRUE" values across rows to keep only the ones where at least 2 cells have 1 cpm value 
+
+```{r}
+keep <- which(rowSums(countCheck) >= 2) # over 1 cpm
+str(keep)
+```
+
+There are 21,960 genes that meet our requeriments
+
+Apply the filter to the normalized edgeR table and save the result to a new edgeR object
+
+```{r}
+dgList3 <- dgList2[keep,, keep.lib.sizes=FALSE]
+```
+
+Compare the dimensions of original and filtered edgeR data:
+
+```{r}
+dim(dgList2)
+dim(dgList3)
+```
+
+Now, let's compare all samples pre and post filtering with a density plot. The following lines produce a density of log-CPM values for (A) raw pre-filtered data and (B) post-filtered data for each sample.
+
+Dotted vertical lines mark the log-CPM threshold that we use (cpm >1). Samples are colored by time as it is represented on the legend.
+
+```{r}
+nsamples <- ncol(dgList)
+lcpm.cutoff <- log2(1)
+```
+
+```{r fig4, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+par(mfrow=c(1,2))
+
+z <- cpm(dgList, log=TRUE, prior.count=1)
+plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="A. Raw data", xlab="Log-cpm")
+abline(v=lcpm.cutoff, lty=3)
+for (i in 2:nsamples){
+  den <- density(z[,i])
+  lines(den$x, den$y, col=Color[i], lwd=2)
+}
+legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
+
+z <- cpm(dgList3, log=TRUE, prior.count=1)
+plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="B. Filtered data", xlab="Log-cpm")
+abline(v=lcpm.cutoff, lty=3)
+for (i in 2:nsamples){
+  den <- density(z[,i])
+  lines(den$x, den$y, col=Color[i], lwd=2)
+}
+legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
+```
+
+### 5.2. EdgeR cutoff
+
+The filterByExpr function of the edgeR package provides an automatic way to filter genes while keeping as many genes as possible with worthwhile counts. By default, the function keeps genes with about 10 read counts or more in a minimum number of samples, where the number of samples is chosen according to the minimum group sample size.
+
+More information of the function:
+
+```{r, eval=F}
+?filterByExpr
+```
+
+Let's apply the filter gruping samples by time:
+
+```{r}
+keep.exprs <- filterByExpr(dgList2, group=dgList2$metadata$Time)
+dgList4 <- dgList2[keep.exprs,, keep.lib.sizes=FALSE]
+```
+
+Compare the dimensions of original, manual filtered and edgeR filtered data:
+
+```{r}
+dim(dgList2)
+dim(dgList3)
+dim(dgList4)
+```
+
+Now, let's compare all samples pre and post filtering with a density plot. The following lines produce a density of log-CPM values for (A) raw pre-filtered data and (B) post-filtered data for each sample. Dotted vertical lines mark the log-CPM threshold (equivalent to a CPM value of about 0.3) used in the filtering step. The actual filtering uses CPM values rather than counts in order to avoid giving preference to samples with large library sizes. For this dataset, the median library size is about 35 million and 10/35 approx. 0.3, so the filterByExpr function keeps genes that have a CPM of 0.3 or more in at least three samples.
+
+```{r}
+L <- mean(dgList$samples$lib.size) * 1e-6 # = 42 million reads
+M <- median(dgList$samples$lib.size) * 1e-6 # = 35 million reads
+lcpm.cutoff <- log2(10/M + 2/L) # cutoff used by filterByExpr function
+```
+
+```{r fig5, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+par(mfrow=c(1,2)) 
+
+z <- cpm(dgList, log=TRUE, prior.count=1)
+plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="A. Raw data", xlab="Log-cpm")
+abline(v=lcpm.cutoff, lty=3)
+for (i in 2:nsamples){
+  den <- density(z[,i])
+  lines(den$x, den$y, col=Color[i], lwd=2)
+}
+legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
+
+z <- cpm(dgList4, log=TRUE, prior.count=1)
+plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="B. Filtered data", xlab="Log-cpm")
+abline(v=lcpm.cutoff, lty=3)
+for (i in 2:nsamples){
+  den <- density(z[,i])
+  lines(den$x, den$y, col=Color[i], lwd=2)
+}
+legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
+```
+
+## 6. Data Exploration
+
+### 6.1. edgeR MDS
+
+We can examine inter-sample relationships by producing a plot based on multidimensional scaling. More details of this kind of exploration on Session 3... this is just an example. When an object of type DGEList is the input of plotMDS function, the real called function is a modified version designed by edgeR team with real name "plotMDS.DGEList". It convert the counts to log-cpm and pass these to the limma plotMDS function. There, distance between each pair of samples (columns) is the root-mean-square deviation (Euclidean distance) for the top genes.
+
+Distances on the plot can be interpreted as leading log2-fold-change, meaning the typical (root-mean-square) log2-fold-change between the samples for the genes that distinguish those samples.
+
+More information about this functions:
+
+```{r, eval=F}
+?plotMDS.DGEList
+?plotMDS
+```
+
+```{r fig6, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+par(mfrow=c(1,2))  #Figure6
+dgMDS <- plotMDS(dgList3, prior.count=1, xlab = "dim1", ylab="dim2", plot = TRUE)
+title(main="A. MDS plot")
+plotMDS(dgList3, prior.count=1, col=Color, labels=dgList$metadata$Time, xlab = "dim1", ylab="dim2")
+title(main="B. Setting colors and labels")
+```
+
+On panel A you see the samples ordination in MDS space. Did you see time groups?
+
+"Labels" in panel B comes from "Time" column of metadata table  
+"Colors" in panel B comes from "Color" column of metadata table
+
+### 6.2. Clustering analysis
+
+Another common data exploration technique used is clustering analysis. A distance is calculated between samples based on some combination of variable and a distance matrix generated. A clustering algorithm is then run over the distance matrix that aggregates/groups samples based on their distance. There are several clustering methods and several clustering packages available in R. Of particular use in this context are the heirarchical clustering functions hclust() available as a base R function and pvclust() available in the pvclust package (Suzuki and Shimodaira, 2006). The advantage with the pvclust() function is it uses bootstrapping to provide a level of confidence that the observed clusters are robust to slight changes in the samples.
+
+#### 6.2.1. Clustering with hclust() function
+
+More details here: https://2-bitbio.com/2017/04/clustering-rnaseq-data-making-heatmaps.html
+
+First, data as cpm:
+
+```{r}
+cpmCounts <- cpm(dgList3, log=TRUE, prior.count=1)
+cpmCounts <- cpmCounts[complete.cases(cpmCounts),] # no missing values
+```
+
+Samples clustering (columns of the matrix)
+
+```{r}
+hc <- hclust(as.dist(1-cor(cpmCounts, method="pearson")), method="average")
+```
+
+Let's plot the sample's dendogram
+
+```{r fig7, fig.align="center", dpi=300, fig.height=4, fig.width=8}
+TreeC = as.dendrogram(hc, method="average")
+plot(TreeC,
+     main = "Sample's Clustering",
+     ylab = "Height")
+```
+  
+We can select a tree "level" to obtain clusters.
+For example, at eight 0.06 we will obtain 3 clusters
+
+```{r fig8, fig.align="center", dpi=300, fig.height=4, fig.width=8}
+TreeC = as.dendrogram(hc, method="average")
+plot(TreeC,
+     main = "Sample's Clustering",
+     ylab = "Height")
+abline(h=0.04, lwd=2, col="pink") # 0.05=2groups, 0.04=3groups, 0.03=4groups
+```
+  
+This is the commmand to cut the tree and save clusters
+
+```{r}
+group <- as.factor(cutree(hc, h=0.04)) # 0.05=2groups, 0.04=3groups, 0.03=4groups
+```
+
+Number of clusters
+
+```{r}
+levels(group)
+```
+
+And this clustering information could be used to enrich PCA plots (next Sesion)
+
+We have clusters, but without statistical confidence we can't do a credible observation.
+
+#### 6.2.2. Clustering with pvclust() function
+
+This method calculates p-values for hierarchical clustering via multiscale bootstrap resampling. Hierarchical clustering is done for given data and p-values are computed for each of the clusters. 
+
+More info about pvclust:
+
+```{r, eval=F}
+?pvclust
+```
+
+On this variable we will set the bootstrap value. You can set it to 10 for a quick result, but change it to 100 or even 1000 for the final figure (and meanwhile go for a coffee cup).
+
+```{r pvclust}
+bootstrap <- 100
+set.seed(123) # Set the seed of R‘s random number generator, which is useful for creating reproducible simulations or random objects.
+pv <- pvclust(cpm(dgList3, log=TRUE, prior.count=1), method.dist="cor", method.hclust="average", nboot=bootstrap)
+```
+
+This variable is to set the number's colors of the plot  
+
+```{r}
+pvcolors <- c(si=4,au=2,bp=4,edge=8)
+```
+
+The cluster plot:  
+
+```{r fig9, fig.align="center", dpi=200, fig.height=6, fig.width=8}
+plot(pv,print.num=FALSE, col.pv=pvcolors, cex.pv=0.8, main=paste("Cluster dendogram with 'Approximately Unbiased' values (%), bootstrap=", bootstrap))
+```
+  
+The cluster plot selecting groups according to a specific alpha value  
+
+```{r fig10, fig.align="center", dpi=200, fig.height=6, fig.width=8}
+plot(pv,print.num=FALSE, col.pv=pvcolors, cex.pv=0.8, main=paste("Cluster dendogram with 'Approximately Unbiased' values (%), bootstrap=", bootstrap))
+pvrect(pv, alpha=0.90, pv="au", type="geq", max.only=TRUE)
+```
+  
+Graph explanation: Two types of values are provided for the confidence of the nodes: AU (Approximately Unbiased) values and BP (Bootstrap Probability) values. In both cases, higher is more confident so not to be confused with conventional p-values. The AU value is computed by multiscale bootstrap resampling and is a better approximation to unbiased p-value than BP value computed by normal bootstrap resampling. Red values are AU p-values, and blue values are BP values. Clusters with AU larger than 90% are highlighted by rectangles, which are strongly supported by data.
+
+With the following command we can select the "significant" clusters and use them in further analysis.
+
+```{r}
+group <- pvpick(pv, alpha=0.90, pv="au", type="geq", max.only=TRUE)
+group$clusters
+```
+
+#### 6.2.3. Model based clustering
+
+The traditional clustering methods, such as hierarchical clustering and k-means clustering, are heuristic and are not based on formal models. Furthermore, k-means algorithm is commonly randomnly initialized, so different runs of k-means will often yield different results. Additionally, k-means requires the user to specify the the optimal number of clusters.
+
+Clustering algorithms can also be developed based on probability models, such as the finite mixture model for probability densities. The word model is usually used to represent the type of constraints and geometric properties of the covariance matrices (Martinez and Martinez, 2005). In the family of model-based clustering algorithms, one uses certain models for clusters and tries to optimize the fit between the data and the models. In the model-based clustering approach, the data are viewed as coming from a mixture of probability distributions, each of which represents a different cluster. In other words, in model-based clustering, it is assumed that the data are generated by a mixture of probability distributions in which each component represents a different cluster. Thus a particular clustering method can be expected to work well when the data conform to the model.
+Read More: 
+https://epubs.siam.org/doi/abs/10.1137/1.9780898718348.ch14?mobileUi=0&
+https://www.datanovia.com/en/lessons/model-based-clustering-essentials/
+
+Here we choose a model-based clustering with Mclust of the package mclust.
+
+```{r, eval=F}
+?mclust
+```
+
+This method needs a lot of resources so, the recommendation is to use a subset of the data. For instance, we could choose a random subset or choose genes withthe highest expression variability over samples. 
+
+Use this variable to set the subset length
+```{r}
+numberRows <- 1000
+```
+
+Option1: Random selection of "numberRows" genes
+```{r}
+cpmCounts_subset.random <- cpmCounts[sample(nrow(cpmCounts), numberRows), ]
+```
+
+Option2: Selection of genes with the highest expression variation. We will use the function rowSds to select the top "numberRows" genes.
+```{r}
+orderPositions <- order(rowSds(cpmCounts), decreasing=T)
+cpmCounts_subset.Sds <- cpmCounts[orderPositions,][1:numberRows,]
+```
+
+>Try both options and compare results)
+
+
+Now, let's fit the data to a model using Mclust function
+
+```{r}
+fit <- Mclust(t(cpmCounts_subset.random), scale.=FALSE)
+```
+
+view solution summary... what's the used model? what it means?
+
+```{r}
+fit
+```
+
+Information about models:
+
+```{r, eval=F}
+?mclustModelNames
+```
+
+Lookup all the attempted options 
+
+```{r}
+summary(fit$BIC) 
+```
+
+Models and their score by component  
+
+```{r fig11, fig.align="center", dpi=300, fig.height=6, fig.width=8}
+plot(fit$BIC) 
+```
+
+Classification vector that we could use on other plots, like PCA (next Sesion)
+```{r}
+group = as.factor(fit$classification) # classification vector
+```
+
+Number of clusters
+```{r}
+levels(group)
+```
+
+### 6.3. Heatmap of samples correlation using mixOmics package
+
+We can examine inter-sample relationships by producing heatmap of samples correlation.
+
+There are several functions to do a Heatmaps in R. Here we will use cim function that comes with the package mixOmics.
+
+First, we need to calculate the correlation between sample using the *cor* function function.
+
+```{r}
+Log2_pseudoCounts <- log2(dgList3$counts+1)
+sampleDists <- as.matrix(cor(Log2_pseudoCounts))
+```
+
+Setting a color pallete over red color:
+
+```{r}
+cimColor <- colorRampPalette(rev(brewer.pal(9, "Reds")))(20)
+```
+
+Before to plot the next figure, expand the RStudio plot panel.
+
+> In general, if you receive a "margins too large" message, try to expand the RStudio plot panel and use the **dev.off()** command to reset the plot device. Then, try again the plot.
+
+> See alternative solutions [on this link](https://github.com/jomaldon/tips/blob/master/R-margins_too_large_problem.md)
+
+
+```{r fig12, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
+```
+
+What if we use cpm instead of pseudocount?
+
+```{r}
+cpmCounts <- cpm(dgList3, log=TRUE, prior.count = 1)
+sampleDists <- as.matrix(cor(cpmCounts))
+```
+
+```{r fig13, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
+```
+
+Note that sample clustering could be different when using pseudocounts or cpm. The correlation between samples is sensible to the kind of data that you use and pseudocounts are different than cpm, as you see on the panel C and D of the first graph of data transformation section. Some people do prefer to use pseudocounts but the correct way is to use cpm (https://www.biostars.org/p/165619/).
+
+## 7. Lineal model
+
+Linear modelling in edgeR is carried out using the glmFit (GLM) and contrasts.fit functions originally written for application to microarrays. The functions can be used for both microarray and RNA-seq data and fit a separate model to the expression values for each gene. Next, empirical Bayes moderation is carried out by borrowing information across all the genes to obtain more precise estimates of gene-wise variability (Smyth 2004).
+
+Here, we fit a GLM to account for the time effect.
+
+### 7.1. Creating the model
+
+In our analysis, linear models are fitted to the data with the assumption that the underlying data is normally distributed. To get started, a design matrix is set up with both time series information. This matrix describes the setup of the experiment.
+
+Our dataset have have 30 samples that belongs to 10 "times" with triplicates, we will use "Time" as the comparison factor.
+
+```{r}
+design.matrix <- model.matrix(~ dgList3$samples$group)
+length(design.matrix[1,]) #10 factors
+```
+
+Number of factors
+
+```{r}
+length(design.matrix[1,]) #10 factors
+```
+
+Detail of factors and assigned samples: 30 rows for 30 samples. You can see a number "1" on the corresponding replicates of each sample.
+Note that **dgList3\$samples\$group0** is not present. As a time series, all factors will be compared against time0.
+
+
+```{r}
+design.matrix # factors
+```
+
+Another model option is to use **model.matrix(0~ + dgList3\$samples\$group)**, but that's not a time series analysis. That's a matrix for paired comparisons (ie, control vs treatment) like will be used on next Session.
+
+A key strength of limma's linear modelling approach, is the ability accommodate arbitrary experimental complexity. Simple designs, such cell type and batch, through to more complicated factorial designs and models with interaction terms can be handled relatively easily. Where experimental or technical effects can be modelled using a random effect, another possibility in limma is to estimate correlations using duplicateCorrelation by specifying a block argument for both this function and in the lmFit linear modelling step.
+
+### 7.2. Estimating dispersions
+
+We need to estimate the dispersion parameter for our negative binomial model. If there are only a few samples, it is difficult to estimate the dispersion accurately for each gene, and so we need a way of'sharing' information between genes. Possible solutions include:
+- Using a common estimate across all genes.
+- Fitting an estimate based on the mean-variance trend across the dataset, such that genes with similar abundances have similar variance estimates (trended dispersion).
+- Computing a genewise dispersion (tagwise dispersion)
+
+In edgeR, we use an empirical Bayes method to 'shrink' the genewise dispersion estimates towards the common dispersion (tagwise dispersion). Note that either the common or trended dispersion needs to be estimated before we can estimate the
+tagwise dispersion.
+
+```{r estimateGLM}
+dgList3a <- estimateGLMCommonDisp(dgList3, design=design.matrix)
+dgList3a <- estimateGLMTrendedDisp(dgList3a, design=design.matrix)
+dgList3a <- estimateGLMTagwiseDisp(dgList3a, design=design.matrix)
+```
+
+We can plot the estimates and see how they differ. The biological coefficient of variation (BCV) is the square root of the dispersion parameter in the negative binomial model.
+
+```{r fig14, fig.align="center", dpi=200, fig.height=4, fig.width=6}
+plotBCV(dgList3a)
+```
+
+There is a function in EdgeR that merges the three previous commands but, the result is not the same therefore, we prefer the three step method. "The estimateDisp function doesn't give exactly the same estimates as the traditional calling sequences".
+
+```{r estimateDisp}
+dgList3b <- estimateDisp(dgList3, design.matrix,trend.method="locfit")
+```
+
+```{r fig15, fig.align="center", dpi=300, fig.height=5, fig.width=8}
+par(mfrow=c(1,2))
+plotBCV(dgList3a)
+title(main="A. three steps")
+plotBCV(dgList3b)
+title(main="B. one step")
+```
+
+The trend is more realistic using "three steps" method. Finally, we choose to follow using that result
+
+```{r}
+dgList3 <- dgList3a
+```
+
+### 7.3. Fitting and making comparisons
+
+Now, we can use edgeR as a GLM. First fit the data to the count model before making contrasts of interest.
+
+```{r glmFit}
+fit <- glmFit(dgList3, design.matrix)
+fit$method
+```
+
+Let’s see the coefficients of this model as derived from the design matrix (colnames of table):
+
+```{r}
+colnames(fit) # factors
+```
+
+Then, tests can be performed with a log-ratio test (function glmRT). For instance, to test differential genes between "time 30" and "time 0", this is equivalent to testing the nullity of the sixth coefficient (see the design matrix, section 8.1). 
+This would then ask the question, "Is there an effect of **time30** on a given gene?"
+
+```{r}
+lrt <- glmLRT(fit,coef=6)
+#kable(head(lrt$table))
+head(lrt$table)
+
+```
+
+This result does not have FDR correction
+The following lines will add this correction using the function topTags
+
+```{r}
+lrtFDR <- topTags(lrt, n = nrow(dgList3$counts))
+#kable(head(lrtFDR$table)) 
+head(lrtFDR$table) 
+```
+
+Now we included FDR correction :)
+
+We want to keep only gene with significant expression difference across time so, we could filter our data with a 2X fold of change cutoff and a FDR < 0.05 or less. Some people only use the FDR cutoff but, that's only a numerical significance... a confidence that two numbers are sufficiently different considering a distribution model. However, an important concept to keep in mind is the biological significance: having twice the concentration of transcripts (2X) is a starting point to filter out genes without a real impact on the phenotype. Of course, there are some genes that with low increments will produce big changes. My advice is to fisrt evaluate final numbers of selected genes with the standard cutoff. This because downstream analysis don't work well with big numbers. You would like to work with a subset of the data (hundreds to several thousands), not all the genes.
+
+```{r}
+selectedLRT.list <- lrtFDR$table$FDR < 0.05 & abs(lrtFDR$table$logFC) > 1
+selectedLRT <- lrtFDR$table[selectedLRT.list, ]
+nrow(selectedLRT)
+```
+
+"selectedLRT" is the list of genes with a expression pattern on "time 30" that differ from the linear model.
+
+The following are the number of genes calculated for each coeficient of the design matrix and what they represent.
+
+1 22043 # Intercept  
+2 86    # time 5  
+3 220   # time 10  
+4 533   # time 15  
+5 654   # time 20  
+6 1056  # time 30  
+7 2208  # time 45  
+8 1886  # time 60  
+9 3471  # time 90  
+10 3313 # time 120
+
+Other options to choose are a mix of factors (times).  
+For example, from factor 2 to factor 10 (time 2 to time 120):
+This would then ask the question, "Is there an effect of **time** on a given gene?"
+
+```{r}
+lrt210 <- glmLRT(fit,2:10)
+```
+```{r}
+lrt210FDR <- topTags(lrt210, n = nrow(dgList3$counts)) # adds FDR correction
+``` 
+```{r}
+selectedLRT210 <- lrt210FDR$table$FDR < 0.05
+selectedLRT210 <- lrt210FDR$table[selectedLRT210, ]
+nrow(selectedLRT210)
+```
+
+Now, we can explore expression of selected DE genes of factor 6 using different plots.
+
+#### 7.3.1. MA plot of selected genes
+
+```{r fig16, fig.align="center", dpi=300, fig.height=5, fig.width=8}
+plotSmear(lrt, de.tags = rownames(selectedLRT))
+abline(h=c(-1, 1), col=2)
+```
+
+#### 7.3.2. Volcano plot of selected genes
+
+```{r fig17, fig.align="center", dpi=300, fig.height=5, fig.width=8}
+volcanoData <- cbind(lrtFDR$table$logFC, -log10(lrtFDR$table$FDR))
+colnames(volcanoData) <- c("logFC", "negLogPval")
+point.col <- ifelse(selectedLRT.list, "red", "black")
+plot(volcanoData, pch = 16, col = point.col, cex = 0.5)
+abline(v=c(-1, 1), col=2)
+abline(h=-log10(0.05), col=2)
+```
+
+#### 7.3.3. Heatmap of selected genes using cpm
+
+Selecting the subset
+```{r fig18, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+cpmCounts.select <- cpmCounts[match(rownames(selectedLRT), rownames(dgList3$counts)), ]
+
+```
+
+Ploting a heatmap of selected genes with "Samples as rows"
+
+```{r fig19, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+finalHMr <- cim(t(cpmCounts.select), color = cimColor, symkey = FALSE, row.cex = 1,
+               col.cex = 0.7)
+```
+
+Ploting a heatmap with "Samples as columns"
+
+```{r fig20, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+finalHMc <- cim(cpmCounts.select, color = cimColor, symkey = FALSE, row.cex = 0.7,
+               col.cex = 1.5)
+```
+
+#### 7.3.4. Some other heatmaps schemes
+
+Default heatmap.2 output
+
+```{r fig21, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+heatmap.2(cpmCounts.select)
+```
+
+Scaling by genes (rows)... also known as z-score
+
+```{r fig22, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+heatmap.2(cpmCounts.select,scale="row", trace="none", cexRow = 0.8,
+          keysize = 1, key.title = NA, key.ylab = NA, 
+          lmat = matrix(c(4,2,3,1),
+            nrow=2,
+            ncol=2),
+          lhei = c(0.2,0.8),
+          lwid = c(0.15,0.85)
+)
+```
+
+Grouping samples by time with a distintive color
+
+```{r fig23, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+
+heatmap.2(cpmCounts.select,scale="row", trace="none", cexRow = 0.8,
+          ColSideColors=Color,
+          keysize = 1, key.title = NA, key.ylab = NA, 
+)
+```
+
+More options:
+
+```{r, eval=F}
+?heatmap.2
+```
+
+### 7.4. Gene clustering of selected genes
+
+In clustering we are interested in whether there are groups of genes or groups of samples that have similar gene expression patterns. The first thing that we have to do is to articulate what we mean by similarity or dissimilarity as expressed by a measure of distance. We can then use this measure to cluster genes or samples that are similar. Here, we will use DE genes to generate a set of clusters with similar expression.
+
+#### 7.4.1. Dendogram of genes
+
+You could use any of the methods described in "Clustering analysis" (Section 6.2)
+
+On this example we will use the "samples dendogram" of the previous heatmap "finalHMr" (Section 7.3.3)
+
+```{r fig24, fig.align="center", dpi=300, fig.height=5, fig.width=8}
+plot(finalHMc$ddr, leaflab="none")
+```
+
+The tree could be "cutted" at a desired level to obtain clusters. If we cut at 40%, we will produce 4 clusters
+
+```{r fig25, fig.align="center", dpi=300, fig.height=5, fig.width=8}
+plot(finalHMc$ddr, leaflab="none")
+abline(h=40, lwd=2, col="pink")
+```
+
+This is the commmand to cut the tree at the desired level and save clusters:
+
+```{r}
+geneClust <- cutree(as.hclust(finalHMc$ddr), h=40) # 50x3 40x4 30x5
+
+```
+
+Number of clusters
+
+```{r}
+length(unique(geneClust))
+```
+
+Listing gene names of cluster 2:
+
+```{r}
+names(which(geneClust == 2))
+```
+
+
+To know the number of genes on each cluster:
+
+```{r}
+length(names(which(geneClust == 1)))
+length(names(which(geneClust == 2)))
+length(names(which(geneClust == 3)))
+length(names(which(geneClust == 4)))
+```
+
+#### 7.4.2. Expression patterns of group of genes
+
+Now, we would like to see the expression pattern of each cluster. We will use cpm data.
+
+```{r}
+scaledata <- cpmCounts.select
+```
+
+We need a function to obtain the mean expression on each sample of a desired cluster:
+
+```{r}
+clust.core = function(i, dat, clusters) {
+  ind = (clusters == i)
+  colMeans(dat[ind,])
+}
+```
+
+When we apply the function, there will be obtained core expression of each cluster
+
+```{r}
+cores <- sapply(unique(geneClust), clust.core, scaledata, geneClust)
+head(cores)
+```
+
+Now, we prepare the data frame
+
+```{r}
+d <- data.frame(cbind(dgList$metadata$Time,cores))
+#names <- rownames(d)
+#rownames(d) <- NULL
+#d <- cbind(names,d)
+colnames(d) <-c("time", paste0("clust_",1:ncol(cores)))
+
+#get the data frame into long format for plotting
+dmolten <- melt(d, id.vars = "time")
+#order by time
+dmolten <- dmolten[order(dmolten$time),]
+breaks=c(as.numeric(levels(factor(dgList$metadata$Time))))
+```
+
+Make the plot:
+
+```{r fig26, fig.align="center", dpi=100, fig.height=5, fig.width=8}
+p0 <- ggplot(dmolten, aes(time, value, col=variable)) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous(minor_breaks = NULL, breaks=breaks) +
+  xlab("Time") +
+  ylab("Expression") +
+  labs(title= "Clusters",color = "Cluster")
+p0
+```
+
+We can select a specific cluster to draw the expression of their genes. I will select cluster1
+
+**Cluster 1**
+
+Subset the complete data by cluster =1:
+
+```{r}
+dClust1 <- t(scaledata[geneClust==1,])
+# add the time
+dClust1 <- data.frame(cbind(data.frame(dgList$metadata$Time),dClust1))
+colnames(dClust1)[1] <- "time"
+# get the data frame into long format for plotting
+dClust1molten <- melt(dClust1, id.vars = "time")
+# order by time
+dClust1molten <- dClust1molten[order(dClust1molten$time),]
+# Subset the cores molten dataframe so we can plot core1
+core1 <- dmolten[dmolten$variable=="clust_1",]
+```
+
+Now, to plot this gene expression we use the group=variable and change the geom_line to grey. Then we add on top of expression the mean expression of the core in blue passing the the core data to geom_line.
+
+```{r fig27, fig.align="center", dpi=100, fig.height=5, fig.width=8}
+p1 <- ggplot(dClust1molten, aes(time, value, group=variable)) + 
+  geom_line(color="grey") +
+  geom_point(data=core1, aes(time,value), color="blue") + 
+  geom_line(data=core1, aes(time,value), color="blue") +
+  scale_x_continuous(minor_breaks = NULL, breaks=breaks) +
+  xlab("Time") +
+  ylab("Expression") +
+  labs(title= "Cluster1", color = "Cluster")
+p1
+```
+
+**All clusters**
+
+We can do it for all the clusters. The following lines create ggplot objects p2 to p5, with the expression data of all clusters. Then, all plots will be joined as an unique plot.
+
+```{r}
+#Function to create plots
+cluster_plot<- function(scaledata, clust){
+  dClust <- t(scaledata[geneClust==clust,])
+  #add time
+  dClust <- data.frame(cbind(data.frame(dgList$metadata$Time),dClust))
+  colnames(dClust)[1] <- "time"
+  #get the data frame into long format for plotting
+  dClustmolten <- melt(dClust, id.vars = "time")
+  #order by time
+  dClustmolten <- dClustmolten[order(dClustmolten$time),]
+  #Subset the cores molten dataframe so we can plot core1
+  core <- dmolten[dmolten$variable==paste0("clust_",clust),]
+
+  p <- ggplot(dClustmolten, aes(time,value, group=variable)) + 
+  geom_line(color="grey") +
+  geom_point(data=core, aes(time,value), color="blue") + 
+  geom_line(data=core, aes(time,value), color="blue") +
+  scale_x_continuous(minor_breaks = NULL, breaks=c(as.numeric(levels(factor(dmolten$time))))) +
+  xlab("Time") +
+  ylab("Expression") +
+  labs(title= paste0("Cluster",clust),color = paste0("Cluster",clust))
+return(p)
+}
+```
+
+```{r}
+p2 <- cluster_plot(scaledata, 2)
+p3 <- cluster_plot(scaledata, 3)
+p4 <- cluster_plot(scaledata, 4)
+```
+
+Now, we are ready to plot all clusters:
+
+```{r fig28, fig.align="center", dpi=350, fig.height=5, fig.width=12}
+# Expand the RStudio plot panel before the plot
+grid.arrange(p0 + theme(legend.position = "none"),
+             p1+ ylab(NULL),
+             p2+ ylab(NULL),
+             p3+ ylab(NULL),
+             p4+ ylab(NULL),
+             ncol=5)
+```
+
+Cool, but each graph have their own scale and they are not sorted. Look for the max and min axes value through the graphs to set global values.
+
+```{r}
+# Setting min a max limits of y axes based on all five plots
+ylim1=-5; ylim2=17
+```
+
+Finally, sort the command lines of expression plots according to p0 order and plot!
+
+```{r fig29, fig.align="center", dpi=350, fig.height=5, fig.width=12}
+# Expand the RStudio plot panel before the plot
+grid.arrange(p0 + ylim(ylim1, ylim2) + theme(legend.position = "none"),
+             p4 + ylim(ylim1, ylim2) + ylab(NULL), 
+             p2 + ylim(ylim1, ylim2) + ylab(NULL), 
+             p1 + ylim(ylim1, ylim2) + ylab(NULL), 
+             p3 + ylim(ylim1, ylim2) + ylab(NULL), 
+             ncol=5)
+```
+
+#### 7.4.3. Saving results
+
+Now, you would want to know what functions are represented on this selected genes. This will be explained on session5.
+
+Meanwhile you can save the gene list of each cluster nor the list of all clusters to a text file to be ready.
+
+```{r}
+# Cluster2 of factor6
+write.table(names(which(geneClust == 2)), "factor6.clust2.txt", sep="\t", quote = FALSE, row.names = F, col.names = F)
+
+# All genes of factor6
+write.table(names(geneClust), "factor6.all.txt", sep="\t", quote = FALSE, row.names = F, col.names = F)
+```
+
+## 8. Session info (and data saving)
+
+```{r}
+sessionInfo()
+#save.image(file = "3_Pipeline-Gene_expression_analysis.RData")
+```

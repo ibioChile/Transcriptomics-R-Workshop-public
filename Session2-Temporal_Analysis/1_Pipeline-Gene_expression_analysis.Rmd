@@ -39,7 +39,7 @@ setwd("~/iBio/workshop2020-iBio/S1")
 
 ## 1. Importing and formatting data
 
-Start importing counts table and metadata associated to the samples (previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Temporal_Analysis/Data) folder).
+Start importing counts table and metadata associated to the samples, previously downloaded from [Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Temporal_Analysis/Data) folder.
 
 ```{r}
 counts <- read.table("fc0.counts_original.txt")

@@ -16,19 +16,19 @@ We should always check reads quality, even when the authors/sequencing company s
     mkdir raw_fastqc
     fastqc -t 8 reduced/*.gz -o raw_fastqc
     
-Within **raw_fastqc** folder, we will find results as different **.html** files, which can be opened with any internet browser.
+Within **raw_fastqc** folder, we will find results as different **.html** files, which can be opened with any web browser.
 
-For instance, if you are using the WSL system (Linux in Windows) you must copy the **.html** to any folder that could be seen by Windows (for example, the root of the disk C).
+If you are using the WSL system (Linux in Windows), in order to be able to use your favorite Windows web explorer to see this results you must copy the **.html** files to any folder that could be seen by Windows (for example, the root of the disk C).
 
 First we create a folder to store the data:
 
-    mkdir /mnt/c/tutorial-RNAseq
+    mkdir /mnt/c/RNAseq-tutorial
     
 Now we copy the data to the created folder:
 
-    cp -r raw_fastqc /mnt/c/tutorial-RNAseq
+    cp -r raw_fastqc /mnt/c/RNAseq-tutorial
     
-Then, you can use your **Windows file explorer** and reach the **.html** in C:\tutorial-RNAseq\raw_fastqc
+Then, you can use your **Windows file explorer** and reach the **.html** files in C:\RNAseq-tutorial\raw_fastqc and open by double-clicking.
 
 These links can give you more information about how to interpret the output of **fastqc**:  
 [fastqc tutorial and faq with good/bad images examples](https://rtsf.natsci.msu.edu/genomics/tech-notes/fastqc-tutorial-and-faq/)  
@@ -68,7 +68,7 @@ We repeat the command used in **1.1** to check the quality of trimmed reads:
     mkdir trimmed_fastqc
     fastqc -t 8 trimmed/*P.fastq.gz -o trimmed_fastqc
 
-Remember that, **as mentioned in section 1.1**, if you are using the WSL system (Linux in Windows) you must copy the **.html** to any folder that could be seen by Windows (for example, the root of the disk C).
+Remember that, **as mentioned in section 1.1**, if you are using the WSL system (Linux in Windows), in order to be able to use your favorite Windows web explorer to see this results you must copy the **.html** files to any folder that could be seen by Windows (for example, the root of the disk C).
 
 ## 2. Mapping and reads quantification
 
@@ -178,12 +178,12 @@ Now, you can copy the **fc0.counts.txt** to your Windows filesystem and use it w
 
 First we create a folder to store the data (in case you don't created it on the previous steps):
 
-    mkdir /mnt/c/tutorial-RNAseq
+    mkdir /mnt/c/RNAseq-tutorial
     
 Now we copy the data:
 
-    cp -r fc0.counts.txt /mnt/c/tutorial-RNAseq/
+    cp -r fc0.counts.txt /mnt/c/RNAseq-tutorial/
 
-Then, you can use your **Windows file explorer** and reach the **fc0.counts.txt** in C:\tutorial-RNAseq\
+Then, you can use your **Windows file explorer** and reach the **fc0.counts.txt** in C:\RNAseq-tutorial\
 
 

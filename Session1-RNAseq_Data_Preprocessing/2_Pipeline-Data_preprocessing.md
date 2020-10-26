@@ -28,7 +28,7 @@ Now we copy the data to the created folder:
 
     cp -r raw_fastqc /mnt/c/RNAseq-tutorial
     
-Then, you can use your **Windows file explorer** and reach the **.html** files in C:\RNAseq-tutorial\raw_fastqc and open by double-clicking.
+Then, you can use your **Windows file explorer** and reach the **.html** files in C:\RNAseq-tutorial\raw_fastqc and open it by double-clicking.
 
 These links can give you more information about how to interpret the output of **fastqc**:  
 [fastqc tutorial and faq with good/bad images examples](https://rtsf.natsci.msu.edu/genomics/tech-notes/fastqc-tutorial-and-faq/)  

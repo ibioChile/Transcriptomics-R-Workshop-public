@@ -20,9 +20,15 @@ Within **raw_fastqc** folder, we will find results as different **.html** files,
 
 For instance, if you are using the WSL system (Linux in Windows) you must copy the **.html** to any folder that could be seen by Windows (for example, the root of the disk C).
 
-    cp -r raw_fastqc /mnt/c/
+First we create a folder to store the data:
+
+    mkdir /mnt/c/tutorial-RNAseq
     
-Then, you can use your Windows file explorer and reach the **.html** in C:\raw_fastqc
+Now we copy the data to the created folder:
+
+    cp -r raw_fastqc /mnt/c/tutorial-RNAseq
+    
+Then, you can use your **Windows file explorer** and reach the **.html** in C:\tutorial-RNAseq\raw_fastqc
 
 These links can give you more information about how to interpret the output of **fastqc**:  
 [fastqc tutorial and faq with good/bad images examples](https://rtsf.natsci.msu.edu/genomics/tech-notes/fastqc-tutorial-and-faq/)  
@@ -61,7 +67,9 @@ We repeat the command used in **1.1** to check the quality of trimmed reads:
 
     mkdir trimmed_fastqc
     fastqc -t 8 trimmed/*P.fastq.gz -o trimmed_fastqc
-   
+
+Remember that, **as mentioned in section 1.1**, if you are using the WSL system (Linux in Windows) you must copy the **.html** to any folder that could be seen by Windows (for example, the root of the disk C).
+
 ## 2. Mapping and reads quantification
 
 Now that we have prepared our reads, we can align the reads to an existing reference genome of Arabidopsis. The current version of the reference genome is TAIR10. Here we will use [HiSat2](http://daehwankimlab.github.io/hisat2/) to align these reads. HiSat2 is the descendent of TopHat, one of the first widely-used aligners, but alternative mappers could be used, such as STAR, salmon, kalisto, etc. There are often numerous mapping parameters that we can specify, but usually the default mapping parameters are fine. However, library type (paired-end vs single-end) and library strandness (stranded vs unstranded) require some different settings when mapping and counting, so they are two important pieces of information to know about samples. This Arabidopsis data comprises unstranded, paired-end reads so we will specify that where necessary. HiSat2 can output a mapping summary file that tells what proportion of reads mapped to the reference genome. As we’re only using a subset of 1,000,000 reads per sample, aligning should just take a few minutes or so. To run the full samples from this dataset would take longer.
@@ -168,4 +176,14 @@ Follow "2.3 Rsubread: quantification" steps
 
 Now, you can copy the **fc0.counts.txt** to your Windows filesystem and use it with Windows RStudio to follow the [RNAseq analysis pipeline in R](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Temporal_Analysis).
 
-    cp -r fc0.counts.txt /mnt/c/
+First we create a folder to store the data (in case you don't created it on the previous steps):
+
+    mkdir /mnt/c/tutorial-RNAseq
+    
+Now we copy the data:
+
+    cp -r fc0.counts.txt /mnt/c/tutorial-RNAseq/
+
+Then, you can use your **Windows file explorer** and reach the **fc0.counts.txt** in C:\tutorial-RNAseq\
+
+

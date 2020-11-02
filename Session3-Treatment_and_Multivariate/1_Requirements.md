@@ -10,7 +10,7 @@ We will not use the original files for this session, but if you'd like to start 
 
     wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR544/FOLDER/*
      
-  |FOLDER |Tissue|Treatment|Time|Replicate|
+  |FOLDER |Tissue|Treatment|Replicate|Time|
   |----------------|-------|------|---|-----|
   | ```000/SRR5440840``` | Shoot | None | 1 | 120 |
   | ```001/SRR5440831``` | Shoot | None | 2 | 120 |
@@ -35,7 +35,7 @@ The original files and can be found here:
 
     wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR544/FOLDER/*
     
-|FOLDER |Tissue|Treatment|Time|Replicate|
+|FOLDER |Tissue|Treatment|Replicate|Time|
 |----------------------|-------|------|---|-----|
 | ```004/SRR5440784``` | Shoot | None | 3 | 0   |
 | ```005/SRR5440785``` | Shoot | None | 2 | 0   |

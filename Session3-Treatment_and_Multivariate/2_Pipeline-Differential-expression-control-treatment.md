@@ -4,7 +4,7 @@ experiment
 Tomás Moyano
 5/25/2020
 
-### **Watch this [video](https://drive.google.com/file/d/1WDBarQF4T7G_AD0Ys-fRnBb9iEISTVsu/view?usp=sharing) for a more detailed explanation of the following pipeline**
+### **Watch this [video](https://drive.google.com/file/d/1EdYCPAKTPI-Z28fyUF8ri1KzDw3nazgd/view) for a more detailed explanation of the following pipeline**
 
 During this session, we will discover genes differentially expressed
 when Arabidopsis’ shoot is grown with no nitrate (KCl treatment),

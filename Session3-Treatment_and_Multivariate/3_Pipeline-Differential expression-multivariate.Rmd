@@ -7,7 +7,7 @@ output: rmarkdown::github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "/Users/pamelacamejo/Documents/IBIO/R workshop/Session3/Pipeline 2/")
+knitr::opts_knit$set(root.dir = "/Users/pamelacamejo/Documents/IBIO/R workshop/Session2/Pipeline 2/")
 ```
 ### **Watch [this video](https://drive.google.com/file/d/1MT_04vC4c23LWJKTjEdTVf7cYj1YPdZf/view?usp=sharing) for a more detailed explanation of the following pipeline**
 
@@ -25,12 +25,14 @@ require(gridExtra)
 library(ComplexHeatmap)
 library(circlize)
 library(VennDiagram)
+
+theme_set(theme_bw())
 ```
 
 > Don't forget to set the folder where you downloaded your files as the working directory.
 
 ```{r warning=FALSE}
-setwd("~/Documents/IBIO/R workshop/Session3/")
+setwd("~/Documents/IBIO/R workshop/Session2/Pipeline 2/")
 ```
 
 ### 1. Importing and formatting data.
@@ -114,12 +116,12 @@ df_allnorm <- rbind(df_raw, df_TMM)
 
 p <- ggplot(data=df_allnorm, aes(x=sample, y=value, fill=method)) 
 p <- p + geom_boxplot()  
-p <- p + theme_bw()
+p <- p + theme(title = element_text(size=10), axis.text.x = element_blank(), 
+               axis.ticks.x = element_blank())
 p <- p + ggtitle("Boxplots of normalized pseudo counts compared to raw data")
 p <- p + facet_grid(method ~ .) 
 p <- p + ylab(expression(log[2] ~ ("normalized cpm  0=1"))) + xlab("")
-p <- p + theme(title = element_text(size=10), axis.text.x = element_blank(), 
-               axis.ticks.x = element_blank())
+
 print(p)
 ```
 
@@ -174,13 +176,13 @@ Now, let's generate boxplots one more time.
 df_allnorm <- rbind(df_raw2, df_TMM)
 
 p <- ggplot(data=df_allnorm, aes(x=sample, y=value, fill=method)) 
-p <- p + geom_boxplot()  
-p <- p + theme_bw()
+p <- p + geom_boxplot() 
+p <- p + theme(title = element_text(size=10), axis.text.x = element_blank(), 
+               axis.ticks.x = element_blank())
 p <- p + ggtitle("Boxplots of normalized pseudo counts compared to raw data")
 p <- p + facet_grid(method ~ .) 
 p <- p + ylab(expression(log[2] ~ ("normalized cpm  0=1"))) + xlab("")
-p <- p + theme(title = element_text(size=10), axis.text.x = element_blank(), 
-               axis.ticks.x = element_blank())
+
 print(p)
 ```
 
@@ -188,12 +190,12 @@ Another way to visualize data distribution is by generating data density plots.
 
 ```{r fig3, fig.align="center", dpi=200, fig.height=5, fig.width=6}
 p <- ggplot(data=df_allnorm, aes(x=value, colour=sample)) + geom_density()
-p <- p + theme_bw()
+p <- p + theme(title = element_text(size=10), legend.position = "none")
 p <- p + ggtitle("Density of normalized pseudo counts compared to raw data")
 p <- p + facet_grid(method ~ . ) 
 p <- p + scale_color_manual(values=colorRampPalette(c("yellow2","goldenrod"))(ncol(pseudo_TMM)))
 p <- p + xlab(expression(log[2] ~ ("normalized cpm  0=1"))) 
-p <- p + theme(title = element_text(size=10), legend.position = "none")
+
 print(p)
 ```
 
@@ -274,7 +276,7 @@ nrow(DE_time_df)
 
 According to this analysis, 883 genes are DE over time.
 
->Additionally, you could also include a fold-change threshold to select DE genes. For instance, we could select genes whose expression change at least 1.5 times at any time point, with respect to time 0.
+>Additionally, you could also include a fold-change threshold to select DE genes. For instance, we could select genes whose expression changes at least 1.5 times at any time point, with respect to time 0.
 
 We will generate a Heatmap of expression to visualize how the expression of these genes is changing over time. There are many libraries designed to generate heatmaps (including ggplot). Here, we'll use the function *Heatmap* from the package *ComplexHeatmap*. This is a very flexible and easy to use library, and it is easy to change parameters and add information. This function requires scaling the data externally.
 
@@ -333,7 +335,6 @@ DE_treatment_meta_melted <- melt(DE_treatment_meta_df)
 ```{r fig7, fig.align="center", dpi=150, fig.height=4, fig.width=6}
 p <- DE_treatment_meta_melted %>% ggplot(aes(x=Time, y = value, colour=Treatment)) + geom_boxplot()  
 p <- p + facet_grid( Tissue ~ .,scale="free_y")
-p <- p + theme_bw()
 p <- p + ggtitle("Boxplots of normalized pseudo counts of AT1G01140")
 p <- p + ylab(expression(log[2] ~ (normalized ~ "cpm, 0=1"))) + xlab("Time")
 p <- p + scale_colour_manual(values=c("red","blue"))
@@ -421,7 +422,6 @@ DE_treatment_meta_melted <- melt(DE_treatment_meta_df)
 ```{r fig10, fig.align="center", dpi=150, fig.height=4, fig.width=6}
 p <- DE_treatment_meta_melted %>% ggplot(aes(x=Time, y = value, colour=Treatment)) + geom_boxplot()  
 p <- p + facet_grid( Tissue ~ .)
-p <- p + theme_bw()
 p <- p + ggtitle("Boxplots of normalized pseudo counts of AT1G01180")
 p <- p + ylab(expression(log[2] ~ (normalized ~ count + 1))) + xlab("Time")
 p <- p + scale_colour_manual(values=c("red","blue"))

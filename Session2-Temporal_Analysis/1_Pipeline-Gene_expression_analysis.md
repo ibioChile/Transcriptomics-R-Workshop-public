@@ -575,7 +575,7 @@ str(keep)
     ##  Named int [1:22043] 1 2 4 5 6 7 8 10 11 13 ...
     ##  - attr(*, "names")= chr [1:22043] "AT1G01010" "AT1G01020" "AT1G01030" "AT1G01040" ...
 
-There are 21,960 genes that meet our requeriments
+There are 22,043 genes that meet our requeriments
 
 Apply the filter to the normalized edgeR table and save the result to a
 new edgeR object

@@ -424,15 +424,15 @@ Let’s see the normalization results with a boxplot
 Color <- c("#FFC900", "#FFB900","#FFA800", "#FF9200", "#FF7700","#FF5D00","#FF4300","#FF2900","#FF0000","#E40000")[as.factor(metadata$Time)]
 
 par(mfrow=c(1,2))
-# plot of unnormalised data
+# plot of raw data
 cldgList <- cpm(dgList, log=TRUE, prior.count = 1)
 boxplot(cldgList, las=2, col=Color, main="")
-title(main="A. Unnormalised data",ylab="Log2-cpm")
+title(main="A. Raw data",ylab="Log2-cpm")
 
-# plot of normalised data
+# plot of normalized data
 cldgList2 <- cpm(dgList2, log=TRUE, prior.count = 1)
 boxplot(cldgList2, las=2, col=Color, main="")
-title(main="B. Normalised data",ylab="Log2-cpm")
+title(main="B. Normalized data",ylab="Log2-cpm")
 ```
 
 <img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig1-1.png" style="display: block; margin: auto;" />

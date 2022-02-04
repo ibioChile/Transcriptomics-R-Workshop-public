@@ -252,7 +252,7 @@ keep <- which(rowSums(countCheck) >= 2) # over 1 cpm
 str(keep)
 ```
 
-There are 21,960 genes that meet our requeriments
+There are 22,043 genes that meet our requeriments
 
 Apply the filter to the normalized edgeR table and save the result to a new edgeR object
 

@@ -1,5 +1,5 @@
 ### In the current github site you will find <ins>instructions</ins> about Sessions A and B
-### Also you will find downloadable files (class notes) prepared by Natan. <ins>Files are above this windows.</ins>
+### Also you will find downloadable files (class notes) prepared by Nate. <ins>Files are above this windows.</ins>
 
 # Session A: Prep Training. R Basics
 

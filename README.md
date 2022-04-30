@@ -2,7 +2,12 @@
 
 This workshop introduces participants to RNA-seq data analysis methods, tools and file formats, using R programming language.
  
-The workshop starts with a 'Basic use of R' Q&A sesion, followed by an 'R visualization' class. The second part of the workshop will focus on RNA-seq data analysis. During these sessions, participants will learn to perform differential expression analyses, using data from different RNA-seq experiment designs, including the generation of transcriptional networks.   
+The workshop starts with a 'Basic use of R' Q&A sesion, followed by an 'R visualization' class following a EdX free course. The idea is to prepare students into R environment and coding before our RNAseq training course.  
+The second part of the workshop will focus on our RNAseq data analysis course. During these sessions, participants will learn to perform differential expression analyses, using data from different RNAseq experiment designs, including the generation of transcriptional networks.   
+
+**Each session mainly consist in personal learning work (your time) with material published weekly by the instructors. At the end of each week (usually friday morning), we will have a Q&A session were instructors will <ins>resume the assigned work, give tips and answer questions</ins>.**  
+
+<ins>Of course, some questions can not wait until friday so, you are invited anytime to ask directly by email.</ins>  
  
 ## Instructors:
 - [Jonathan Maldonado, PhD (USACH)](https://www.maldonadolab.com)

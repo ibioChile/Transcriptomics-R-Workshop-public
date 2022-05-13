@@ -28,11 +28,11 @@ Viernes, 6 de Mayo 11:00hrs – Q&A Section1&2&3: R Visualization
 Viernes, 13 de Mayo 11:00hrs – Q&A Section4&5: R Visualization & R Markdown  
 
 ### Homework 1: preparative training sessions
-- Publicación de Tarea 1
+- Publicación de Tarea 1  
 Viernes, 13 de Mayo
 - Ayuda para preguntas sobre Tarea 1  
 Viernes, 20 de Mayo 11:00hrs
-- Plazo de entrega de Tarea 1
+- Plazo de entrega de Tarea 1  
 Lunes, 23 de Mayo 17:00hrs
  
 ### Session 1: RNAseq. Data pre-processing

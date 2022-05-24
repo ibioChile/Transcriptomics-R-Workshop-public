@@ -117,8 +117,8 @@ Run these commands to download a *reduced* version of these files (needed for th
 
     cd test1
     mkdir reduced && cd reduced
-    wget http://genius.bio.puc.cl/genius/workshop/reduced_reads_session1.tar
-    wget http://genius.bio.puc.cl/genius/workshop/reduced_reads_session1.tar.md5
+    wget http://genius.bio.puc.cl/workshop/reduced_reads_session1.tar
+    wget http://genius.bio.puc.cl/workshop/reduced_reads_session1.tar.md5
     
     Linux:  
     md5sum reduced_reads_session1.tar  

@@ -36,7 +36,7 @@ Viernes, 20 de Mayo 11:00hrs
 Lunes, 23 de Mayo 17:00hrs
  
 ### Session 1: RNAseq. Data pre-processing
-- Pre-processing of RNA-seq libraries.  
+- [Pre-processing of RNA-seq libraries.](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session1-RNAseq_Data_Preprocessing)  
 Viernes, 27 de Mayo 11:00hrs – Q&A Section1: RNAseq Data Preprocessing
 
 ### Session 2: RNAseq. Temporal Analysis

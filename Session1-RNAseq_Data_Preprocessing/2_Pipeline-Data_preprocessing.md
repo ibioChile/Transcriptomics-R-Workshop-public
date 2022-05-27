@@ -5,6 +5,10 @@ Also, don't forget to read and follow the [Requirements](https://github.com/ibio
 
 ### **Watch [this video](https://drive.google.com/file/d/104scpjSD8ZeEIcqTHo0JNqueY5RGxJdH/view) for a more detailed explanation of the following pipeline**
 
+We will start activating the conda **env1** environment
+
+    conda activate env1
+
 ## 1. Quality Control.
 
 ### 1.1 Quality control check.

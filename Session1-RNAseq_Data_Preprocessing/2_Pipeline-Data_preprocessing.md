@@ -178,6 +178,10 @@ Follow "2.3 Rsubread: quantification" steps
     >write.table(fc0$counts, "../fc0.counts.txt", sep="\t", col.names=NA, quote=F)
     >write.table(fc0$stat, "../fc0.stat.txt", sep="\t", row.names=F, quote=F)
 
+    # Once all done, you can quit R command line interface with this command
+    >q()
+    ## Respond "n" to the following question as this time it is not necessary: Save workspace image? [y/n/c]
+    
 Now, you can copy the **fc0.counts.txt** to your Windows filesystem and use it with Windows RStudio to follow the [RNAseq analysis pipeline in R](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Temporal_Analysis).
 
 First we create a folder to store the data (in case you don't created it on the previous steps):

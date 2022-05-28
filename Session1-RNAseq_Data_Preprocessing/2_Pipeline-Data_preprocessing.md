@@ -5,6 +5,10 @@ Also, don't forget to read and follow the [Requirements](https://github.com/ibio
 
 ### **Watch [this video](https://drive.google.com/file/d/104scpjSD8ZeEIcqTHo0JNqueY5RGxJdH/view) for a more detailed explanation of the following pipeline**
 
+We must activate the conda **env1** environment that we prepared with the Requirements instructions. This way, all required programs and packages will be accessible for the following pipeline.
+
+    conda activate env1
+
 ## 1. Quality Control.
 
 ### 1.1 Quality control check.
@@ -112,7 +116,7 @@ The ".align.stat.txt" files contains the stats of the alignment.
 ### 2.3 Rsubread: quantification
 
 To assign the reads to a gene, we use the R software (R Core Team 2015). In this guide we will use the Rsubread package that facilitates the RNA-seq read data analyses, proportionating several metrics: quality assessment of sequence reads, read alignment, read summarization, exon-exon junction among others (Liao, Smyth, & Shi, 2013). 
-**This package is available in Unix/Linux/Mac, but in Windows it's not easy to install.**
+**This package is available in Unix/Linux/Mac/Windows, but in Windows sometimes it's not easy to install.**
 
 > If you are using the WSL system (Linux in Windows), must read the note at the end of this tutorial.
     
@@ -138,16 +142,16 @@ Then, we save the counts and associated stats in tab delimited files:
 
 Now, with **fc0.counts.txt** file you are ready to start the [RNAseq analysis pipeline in R](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Temporal_Analysis).
 
-### 2.4 Rsubread: quantification in Windows
+### 2.4 Rsubread: quantification in Windows using Linux with WSL system
 
 If you are using the WSL system (Linux in Windows), you can run R in the bash terminal to complete the Rsubread steps and then, with the results, you can move to Windows Rstudio.
 
 The steps are:
 
-Install R on the conda environment
+Install R on a conda environment
 
     conda deactivate
-    conda create -n env2 -c conda-forge -c bioconda r-base
+    conda create -n env2 -c conda-forge r-base=4.1.3
     conda activate env2
  
 Enter to the R environmment
@@ -174,6 +178,10 @@ Follow "2.3 Rsubread: quantification" steps
     >write.table(fc0$counts, "../fc0.counts.txt", sep="\t", col.names=NA, quote=F)
     >write.table(fc0$stat, "../fc0.stat.txt", sep="\t", row.names=F, quote=F)
 
+    # Once all done, you can quit R command line interface with this command
+    >q()
+    ## Respond "n" to the following question as this time it is not necessary: Save workspace image? [y/n/c]
+    
 Now, you can copy the **fc0.counts.txt** to your Windows filesystem and use it with Windows RStudio to follow the [RNAseq analysis pipeline in R](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Temporal_Analysis).
 
 First we create a folder to store the data (in case you don't created it on the previous steps):

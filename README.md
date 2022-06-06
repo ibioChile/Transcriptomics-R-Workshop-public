@@ -40,12 +40,12 @@ Lunes, 23 de Mayo 17:00hrs
 Viernes, 27 de Mayo 11:00hrs – Q&A Section1: RNAseq Data Preprocessing
 
 ### Session 2: RNAseq. Temporal Analysis
-- Temporal analysis of RNA-seq data.  
+- [Temporal analysis of RNA-seq data.](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Temporal_Analysis)  
 Viernes, 3 de Junio 11:00hrs – Q&A Section2: Temporal analysis of RNA-seq data
  
 ### Session 3: RNAseq. Treatment_and_Multivariables
-- Analysis of RNA-seq data, treatment effect.  
-- Analysis of RNA-seq data, multiple variables.  
+- [Analysis of RNA-seq data, treatment effect.](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session3-Treatment_and_Multivariate)  
+- [Analysis of RNA-seq data, multiple variables.](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session3-Treatment_and_Multivariate)  
 Viernes, 10 de Junio 11:00hrs – Q&A Section3: Treatment_and_Multivariables
  
 ### Session 4: RNAseq. Transcriptional Networks

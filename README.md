@@ -32,7 +32,7 @@ Viernes, 13 de Mayo 11:00hrs – Q&A Section4&5: R Visualization & R Markdown
 Viernes, 13 de Mayo
 - Ayuda para preguntas sobre Tarea 1  
 Viernes, 20 de Mayo 11:00hrs
-- Plazo de entrega de Tarea 1  
+- Plazo de entrega Tarea 1  
 Lunes, 23 de Mayo 17:00hrs
  
 ### Session 1: RNAseq. Data pre-processing
@@ -49,9 +49,13 @@ Viernes, 3 de Junio 11:00hrs – Q&A Section2: Temporal analysis of RNA-seq data
 Viernes, 10 de Junio 11:00hrs – Q&A Section3: Treatment_and_Multivariables
  
 ### Session 4: RNAseq. Transcriptional Networks
-- Transcriptional networks.  
+- [Transcriptional networks.](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session4-Transcriptional_networks)  
 Viernes, 17 de Junio 11:00hrs – Q&A Section4: Transcriptional Networks
 
 ### Homework 2: RNAseq data analysis
-- Tarea2  
-Viernes, 24 de Junio 10:00hrs
+- Publicación de Tarea 2  
+Viernes, 17 de Junio  
+- Ayuda para preguntas sobre Tarea 2  
+Viernes, 01 de Julio 11:00hrs  
+- Plazo de entrega Tarea 2  
+Lunes, 04 de Julio 17:00hrs  

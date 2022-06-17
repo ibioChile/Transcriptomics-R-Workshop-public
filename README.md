@@ -55,7 +55,7 @@ Viernes, 17 de Junio 11:00hrs – Q&A Section4: Transcriptional Networks
 ### Homework 2: RNAseq data analysis
 - Publicación de Tarea 2  
 Viernes, 17 de Junio  
-- Ayuda para preguntas sobre Tarea 2  
+- Ayuda para preguntas sobre Tarea 2 **y último plazo para consultas**  
 Viernes, 01 de Julio 11:00hrs  
 - Plazo de entrega Tarea 2  
 Lunes, 04 de Julio 17:00hrs  

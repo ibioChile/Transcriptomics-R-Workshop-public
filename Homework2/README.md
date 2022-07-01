@@ -3,7 +3,7 @@
 *Written by Pamela Camejo*  
 *Updated in June 2022 - Jonathan Maldonado*
 
-This homework tests some of the knowledge acquired during the three "RNA-seq data analysis" sessions of this workshop and it is a **requirement** to receive your certificate of completion. The assignment is due Monday, July 4 (17hrs). **Code with figures must be prepared using RMarkdown format (.Rmd) in RStudio** except for Part 1. You can download and use any of the published .Rmd files as template (sessions 2 to 4). After completion, **send Us. an email with all requested files and your RMarkdown (Part 2-5)**
+This homework tests some of the knowledge acquired during the three "RNA-seq data analysis" sessions of this workshop and it is a **requirement** to receive your certificate of completion. The assignment is due Monday, July 4 (17hrs). **Code with figures must be prepared using RMarkdown format (.Rmd) in RStudio** except for Part 1. You can download and use any of the published .Rmd files as template (sessions 2 to 4). After completion, **send Us an email with all requested files and your RMarkdown (Part 2-5)**
 
 Just in case: [info about RMarkdown](https://rmarkdown.rstudio.com/lesson-1.html) and a [useful Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf).
 

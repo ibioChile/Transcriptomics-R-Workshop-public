@@ -101,7 +101,7 @@ exp(mean(log(x)))   # Where x is a vector of numbers
  
   **HINT**: Use *rowMeans* to calculate the average of rows in a matrix or data.frame.  
 
-7.2 Divide each row of counts by the geometric mean. This new table is known as 'table of ratios'. 
+  * Divide each row of counts by the geometric mean. This new table is known as 'table of ratios'. 
  
 7.3 Calculate the median of each column of 'table of ratios' (ignore NA in median calculation). **HINT**: Check function *colMedians*, which is part of the package *matrixStats*. The input of this function should be a matrix and not a data.frame. 
   

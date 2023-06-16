@@ -37,8 +37,8 @@ Import counts table as 'pasillaCountsTable'. Make sure that column names are equ
 
 2. Write a line in R to **print the answer** to each of this questions.
 
-	2.1 How many rows (genes) in the table?  
-	2.2 How many columns (samples) in the table? 
+  * 2.1 How many rows (genes) in the table?  
+  * 2.2 How many columns (samples) in the table? 
 
 3. **Create metadata table**. Create a data frame called 'pasillaMetadataTable' containing the following sample information:
 
@@ -94,22 +94,22 @@ Import counts table as 'pasillaCountsTable'. Make sure that column names are equ
 
 Following this diagram, the 'median_of_ratios' function that you will design here should take as input any table with counts (formatted like 'pasillaCountsTable') and perform the following calculations:
 
-7.1 Create a vector equal to the geometric mean across all samples. This vector cotains one value per each gene and should have the same number of rows that input table. Use this formula to calculate the geometric mean: 
+  * 7.1 Create a vector equal to the geometric mean across all samples. This vector cotains one value per each gene and should have the same number of rows that input table. Use this formula to calculate the geometric mean: 
 
 
 exp(mean(log(x)))   # Where x is a vector of numbers  
  
   **HINT**: Use *rowMeans* to calculate the average of rows in a matrix or data.frame.  
 
-  *7.2* Divide each row of counts by the geometric mean. This new table is known as 'table of ratios'. 
+  * 7.2 Divide each row of counts by the geometric mean. This new table is known as 'table of ratios'. 
  
-7.3 Calculate the median of each column of 'table of ratios' (ignore NA in median calculation). **HINT**: Check function *colMedians*, which is part of the package *matrixStats*. The input of this function should be a matrix and not a data.frame. 
+  * 7.3 Calculate the median of each column of 'table of ratios' (ignore NA in median calculation). **HINT**: Check function *colMedians*, which is part of the package *matrixStats*. The input of this function should be a matrix and not a data.frame. 
   
-7.4 Finally, calculate the normalized count values using the normalization factor (median of columns). This is performed by dividing each count value in a given sample by that sample’s normalization factor.   
+  * 7.4 Finally, calculate the normalized count values using the normalization factor (median of columns). This is performed by dividing each count value in a given sample by that sample’s normalization factor.   
 
   **HINT**: Check the function *apply* to divide each column by a different number, then transpose the resulting matrix. 
   
-7.5 Print the normalized table inside the function. 
+  * 7.5 Print the normalized table inside the function. 
 
 8. **Use this function** to normalize 'countTable_paired' and store results in 'norm_count'.
 

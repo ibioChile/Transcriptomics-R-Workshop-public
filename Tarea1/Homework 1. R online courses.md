@@ -63,7 +63,7 @@ Import counts table as 'pasillaCountsTable'. Make sure that column names are equ
 
 7. **Create a function 'median_of_ratios'** to normalize counts using the ['median of ratios' method](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html). In this method, each count is divided by a sample-specific size factor. The following diagram describes the steps followed to perform this normalization:
 
-`	┌─────────────────────────┐
+<pre><code>	┌─────────────────────────┐
 	│    Step 1: Calculate    │
 	│row-wise geometric mean. │
 	└───────────┬─────────────┘
@@ -87,12 +87,13 @@ Import counts table as 'pasillaCountsTable'. Make sure that column names are equ
 	│  normalized values by   │
 	│ dividing each count by  │
 	│ the sample size factor. │
-	└─────────────────────────┘`
+	└─────────────────────────┘</code></pre>
 
 Following this diagram, the 'median_of_ratios' function that you will design here should take as input any table with counts (formatted like 'pasillaCountsTable') and perform the following calculations:
-	7.1 Create a vector equal to the geometric mean across all samples. This vector cotains one value per each gene and should have the same number of rows that input table. Use this formula to calculate the geometric mean:  
 
-exp(mean(log(x)))   # Where x is a vector of numbers   
+	7.1 Create a vector equal to the geometric mean across all samples. This vector cotains one value per each gene and should have the same number of rows that input table. Use this formula to calculate the geometric mean: 
+
+        exp(mean(log(x)))   # Where x is a vector of numbers 
  
   **HINT**: Use *rowMeans* to calculate the average of rows in a matrix or data.frame.
         

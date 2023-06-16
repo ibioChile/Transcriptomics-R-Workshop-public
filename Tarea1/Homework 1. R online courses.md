@@ -7,9 +7,9 @@ This homework tests some of the knowledge acquired during 'R Basics' and 'R Visu
 
 | Field | Info |
 | ------- | ---- |
-| **Help session** | Friday May 20 2022 |
-| **Due date** | Monday May 23 2022 at 5:00pm |
-| **Upload link** | [link to upload folder](https://www.dropbox.com/request/ksKczHquA6ZIJgCOfADQ) |
+| **Help session** | Friday June 23 2022 at 11:00am |
+| **Due date** | Saturday June 24 2022 at 10:00am |
+| **Upload link** | [link to upload folder](https://www.dropbox.com/request/dgFJl6uRYQDt9v9qx6ox) |
 | **Upload format** | Save as an R script from R studio in the following name **Homework1_[Nombre].[Apellido].R** |
 
 The goal of this homework is to start working with data resulting from RNA-sequencing. We will import data, process it, create functions, load libraries, use some popular functions (some of them different from the ones used in online classes) and create and modify plots. We will work with data from the 'pasilla' package. This package provides per-gene read counts computed for selected genes from RNA-seq data that were presented in the article ["Conservation of an RNA regulatory map between Drosophila and mammals"](https://www.ncbi.nlm.nih.gov/pubmed/20921232). 

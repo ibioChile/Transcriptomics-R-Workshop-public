@@ -34,8 +34,8 @@ Import counts table as 'pasillaCountsTable'. Make sure that column names are equ
 
 2. Write a line in R to **print the answer** to each of this questions.
 
-	* How many rows (genes) in the table?
-	* How many columns (samples) in the table?
+  2.1 How many rows (genes) in the table?
+  2.2 How many columns (samples) in the table?
 
 3. **Create metadata table**. Create a data frame called 'pasillaMetadataTable' containing the following sample information:
 

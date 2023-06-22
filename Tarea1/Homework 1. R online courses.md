@@ -1,7 +1,7 @@
 # Homework 1: R Basics and Visualization
 
 *Written by Pamela Camejo*  
-*Updated in May 2022 - Nate Johnson*
+*Updated in May 2022 - Nate Johnson*  
 *Updated in June 2023 - Nate Johnson*
 
 ## Homework dates and format
@@ -96,8 +96,9 @@ Following this diagram, the 'median_of_ratios' function that you will design her
 
   * 7.1 Create a vector equal to the geometric mean across all samples. This vector cotains one value per each gene and should have the same number of rows that input table. Use this formula to calculate the geometric mean: 
 
-
+`
 exp(mean(log(x)))   # Where x is a vector of numbers  
+`
  
   **HINT**: Use *rowMeans* to calculate the average of rows in a matrix or data.frame.  
 

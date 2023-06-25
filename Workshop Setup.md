@@ -1,6 +1,6 @@
 # Workshop Setup
 
-This workshop is meant to be hands-on and interactive. We would prefer not to spend time during the sessions getting everyone setup, so some things are needed in advance of the workshop. If you run into any problems, please feel free to email [Pamela Camejo](pcamejo@bio.puc.cl).
+This workshop is meant to be hands-on and interactive. We would prefer not to spend time during the sessions getting everyone setup, so some things are needed in advance of the workshop. If you run into any problems, please feel free to email [Team Bioinfo](bioinfo@ibio.cl).
 
 We will be using the software outlined in the instructions below. Please see the section for your operating system for those directions.
 

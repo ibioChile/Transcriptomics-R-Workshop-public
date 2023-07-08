@@ -103,7 +103,7 @@ Paste the following text, **save and exit**:
     	base=${fn##*/};
     	echo "Processing sample ${base%_*}"
 	hisat2 -p 2 --dta -x databases/Athaliana -1 $fn -2 ${fn%_*}_2P.fastq.gz -S mapping/${base%_*}_Athaliana.sam 2> mapping/${base%_*}.align.stat.txt
-	samtools sort -@ 4 -o mapping/${base%_*}_Athaliana.bam mapping/${base%_*}_Athaliana.sam
+	samtools view -u mapping/${base%_*}_Athaliana.sam | samtools sort -o mapping/${base%_*}_Athaliana.bam
 	rm mapping/${base%_*}_Athaliana.sam
     done
 

@@ -51,7 +51,7 @@ Then, we create a file containing the script to run Trimmomatic on each read fil
 Then, paste the following command, **exit and save**:
 > The modifier **-threads** indicates the number of processors to be used by the program... don't forget to review this parameter before saving the file.
 
-    mkdir trimmed/
+    mkdir -p trimmed/
     for f in reduced/*1_1M.fastq.gz; do
 		base=${f##*/};
 		java -jar ~/test1/Downloads/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 8 $f ${f%_*_*}_2_1M.fastq.gz -baseout trimmed/${base%_*_*}_1M_trimmed.fastq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:20 TRAILING:20 SLIDINGWINDOW:10:30 MINLEN:50 AVGQUAL:25;
@@ -97,7 +97,7 @@ We will write an script with the command below to align each set of reads from s
 Paste the following text, **save and exit**:
 > The modifier **-p** indicates the number of processors to be used by the program... don't forget to review this parameter before saving the file.
 
-    mkdir mapping
+    mkdir -p mapping
     for fn in trimmed/*_1M_trimmed_1P.fastq.gz;
     do	
     	base=${fn##*/};

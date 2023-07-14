@@ -1,7 +1,7 @@
-Session 2 | Gene expression analysis
+Session 2 \| Gene expression analysis
 ================
 Jonathan Maldonado
-06/03/2020
+13/07/2023
 
 Following the former pipeline, we were able to obtain a table with read
 counts per gene of Arabidopsis. That table was generated using the
@@ -16,33 +16,86 @@ BiocManager::install(“packagename”).
 
 ``` r
 library(edgeR)
+```
+
+    ## Warning: package 'edgeR' was built under R version 4.2.1
+
+``` r
 library(knitr)
+```
+
+    ## Warning: package 'knitr' was built under R version 4.2.3
+
+``` r
 library(dplyr)
+```
+
+    ## Warning: package 'dplyr' was built under R version 4.2.3
+
+``` r
 library(pvclust)
+```
+
+    ## Warning: package 'pvclust' was built under R version 4.2.1
+
+``` r
 library(ggplot2)
+```
+
+    ## Warning: package 'ggplot2' was built under R version 4.2.3
+
+``` r
 require(gridExtra)
+```
+
+    ## Warning: package 'gridExtra' was built under R version 4.2.1
+
+``` r
 library(RColorBrewer)
 library(mixOmics)
+```
+
+    ## Warning: package 'MASS' was built under R version 4.2.3
+
+``` r
 library(reshape2)
+```
+
+    ## Warning: package 'reshape2' was built under R version 4.2.1
+
+``` r
 library(gplots)
+```
+
+    ## Warning: package 'gplots' was built under R version 4.2.1
+
+``` r
 library(mclust)
+```
+
+    ## Warning: package 'mclust' was built under R version 4.2.3
+
+``` r
 library(matrixStats)
 ```
+
+    ## Warning: package 'matrixStats' was built under R version 4.2.1
 
 Don’t forget to set the working directory right were your downloaded
 files are. If you have previous RData file (from a previous session),
 use the *load* command to load the session.
 
 ``` r
-setwd("~/iBio/workshop2020-iBio/S1")
+setwd("C:/tmp/S2")
 #load("3_Pipeline-Gene_expression_analysis.RData")
 ```
 
-## 1\. Importing and formatting data
+## 1. Importing and formatting data
 
-Start importing counts table and metadata associated to the samples
-(previously downloaded from
-[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Temporal_Analysis/Data)).
+Start importing counts table and metadata associated to the samples,
+previously downloaded from
+[Data](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/tree/master/Session2-Temporal_Analysis/Data)
+folder.
 
 ``` r
 counts <- read.table("fc0.counts_original.txt")
@@ -51,7 +104,7 @@ kable(head(metadata))
 ```
 
 | Sample     | Tissue | Treatment | Replicate | Time |
-| :--------- | :----- | :-------- | --------: | ---: |
+|:-----------|:-------|:----------|----------:|-----:|
 | SRR5440784 | Shoot  | None      |         1 |    0 |
 | SRR5440785 | Shoot  | None      |         2 |    0 |
 | SRR5440786 | Shoot  | None      |         3 |    0 |
@@ -67,7 +120,7 @@ kable(head(counts))
 ```
 
 |           | SRR5440784 | SRR5440785 | SRR5440786 | SRR5440814 | SRR5440815 | SRR5440816 | SRR5440817 | SRR5440818 | SRR5440819 | SRR5440820 | SRR5440821 | SRR5440822 | SRR5440823 | SRR5440824 | SRR5440825 | SRR5440826 | SRR5440827 | SRR5440828 | SRR5440829 | SRR5440830 | SRR5440831 | SRR5440832 | SRR5440833 | SRR5440834 | SRR5440835 | SRR5440836 | SRR5440837 | SRR5440838 | SRR5440839 | SRR5440840 |
-| --------- | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: |
+|:----------|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|
 | AT1G01010 |       1040 |       1512 |       1162 |        517 |        379 |        440 |        279 |        384 |        362 |        421 |        221 |        265 |        339 |        406 |        597 |        394 |        367 |        263 |        307 |        379 |        283 |        369 |        296 |        588 |        258 |        383 |        265 |        400 |        199 |        487 |
 | AT1G01020 |        376 |        722 |        679 |        206 |        226 |        213 |        291 |        244 |        224 |        209 |        327 |        260 |        260 |        197 |        368 |        217 |        168 |        171 |        178 |        340 |        277 |        225 |        206 |        282 |        103 |        222 |        243 |        267 |        201 |        370 |
 | AT1G03987 |          1 |          0 |          4 |          0 |          1 |          0 |          1 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          1 |          1 |          0 |          1 |          0 |          0 |          0 |          0 |          1 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |
@@ -88,7 +141,7 @@ dim(counts)
 
 > This table has 30 samples and 32,833 genes.
 
-## 2\. Creating the edgeR object
+## 2. Creating the edgeR object
 
 To create the edgeR object we need the counts. Optionally we can group
 samples by a factor. We will group samples by time.
@@ -97,8 +150,8 @@ samples by a factor. We will group samples by time.
 dgList <- DGEList(counts=counts, genes=rownames(counts), group=metadata$Time)
 ```
 
-Take a look to the created object. It contains data for $counts,
-$samples and $genes.
+Take a look to the created object. It contains data for \$counts,
+\$samples and \$genes.
 
 ``` r
 dgList
@@ -156,15 +209,15 @@ dgList
     ## AT1G01040 AT1G01040
     ## 32828 more rows ...
 
-A more detailed view on $samples will show you that they are grouped, as
-expected.
+A more detailed view on \$samples will show you that they are grouped,
+as expected.
 
 ``` r
 kable(dgList$samples)
 ```
 
 |            | group | lib.size | norm.factors |
-| ---------- | :---- | -------: | -----------: |
+|:-----------|:------|---------:|-------------:|
 | SRR5440784 | 0     | 41320115 |            1 |
 | SRR5440785 | 0     | 60926929 |            1 |
 | SRR5440786 | 0     | 62461021 |            1 |
@@ -201,7 +254,7 @@ kable(head(dgList$counts)) # segment of the table
 ```
 
 |           | SRR5440784 | SRR5440785 | SRR5440786 | SRR5440814 | SRR5440823 | SRR5440832 | SRR5440815 | SRR5440824 | SRR5440833 | SRR5440816 | SRR5440825 | SRR5440834 | SRR5440817 | SRR5440826 | SRR5440835 | SRR5440818 | SRR5440827 | SRR5440836 | SRR5440819 | SRR5440828 | SRR5440837 | SRR5440820 | SRR5440829 | SRR5440838 | SRR5440821 | SRR5440830 | SRR5440839 | SRR5440822 | SRR5440831 | SRR5440840 |
-| --------- | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: | ---------: |
+|:----------|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|-----------:|
 | AT1G01010 |       1040 |       1512 |       1162 |        517 |        339 |        369 |        379 |        406 |        296 |        440 |        597 |        588 |        279 |        394 |        258 |        384 |        367 |        383 |        362 |        263 |        265 |        421 |        307 |        400 |        221 |        379 |        199 |        265 |        283 |        487 |
 | AT1G01020 |        376 |        722 |        679 |        206 |        260 |        225 |        226 |        197 |        206 |        213 |        368 |        282 |        291 |        217 |        103 |        244 |        168 |        222 |        224 |        171 |        243 |        209 |        178 |        267 |        327 |        340 |        201 |        260 |        277 |        370 |
 | AT1G03987 |          1 |          0 |          4 |          0 |          0 |          0 |          1 |          0 |          1 |          0 |          1 |          0 |          1 |          1 |          0 |          0 |          0 |          0 |          0 |          1 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |
@@ -216,7 +269,7 @@ dgList$metadata <- metadata
 ```
 
 Now, take a look to the object and you will see a new variable called
-$metadata at the end
+\$metadata at the end
 
 ``` r
 dgList
@@ -331,7 +384,7 @@ dgList$samples
     ## t120.r2   120 18059122            1
     ## t120.r3   120 27663285            1
 
-## 3\. Data normalization
+## 3. Data normalization
 
 During the sample preparation or sequencing process, external factors
 that are not of biological interest can affect the expression of
@@ -353,9 +406,9 @@ function in edgeR (but you could use others like upperquartile. The
 normalisation \# factors calculated here are used as a scaling factor
 for the library sizes. When working with DGEList-objects, these
 normalisation factors are automatically stored in
-x\(samples\)norm.factors. For this dataset the effect of
-TMM-normalisation is mild, as evident in the magnitude of the scaling
-factors, which are all relatively close to 1.
+x$samples$norm.factors. For this dataset the effect of TMM-normalisation
+is mild, as evident in the magnitude of the scaling factors, which are
+all relatively close to 1.
 
 More info on this command:
 
@@ -395,7 +448,7 @@ head(dgList2$samples)
     ## t5.r2     5 18728454    1.1159781
     ## t5.r3     5 17873947    1.0828884
 
-The column $norm.factors is different. As expected, the calcNormFactors
+The column \$norm.factors is different. As expected, the calcNormFactors
 function fill those values according to the chosen method.
 
 ``` r
@@ -435,12 +488,12 @@ boxplot(cldgList2, las=2, col=Color, main="")
 title(main="B. Normalized data",ylab="Log2-cpm")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig1-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig1-1.png" style="display: block; margin: auto;" />
 
 Did you see the difference? (hint: compare the median and the upper
 quartile). From now on, we will work with normalized data.
 
-## 4\. Data transformation for visualization
+## 4. Data transformation for visualization
 
 Count data has a has a broad spectrum of distribution, from genes with
 zero count to genes with thousands.
@@ -448,25 +501,29 @@ zero count to genes with thousands.
 Plot the following boxplots:
 
 ``` r
-par(mfrow=c(1,4)) #Figure2
+par(mfrow=c(1,5)) #Figure2
 boxplot(dgList$counts, las=2, col=as.matrix(Color), main="")
-title(main="A. Untransformed data",ylab="original data")
+title(main="A. Original data",ylab="original data")
 
-Log2 <- log2(dgList2$counts)
-Log2_pseudoCounts <- log2(dgList2$counts+1)
-cpmCounts <- cpm(dgList2, log=TRUE, prior.count = 1)
+Log2 <- log2(dgList$counts)
+Log2_pseudoCounts <- log2(dgList$counts+1)
+cpmCounts <- cpm(dgList, log=TRUE, prior.count = 1)
+cpmCounts2 <- cpm(dgList2, log=TRUE, prior.count = 1)
 
 boxplot(Log2, las=2, col=as.matrix(Color), main="")
-title(main="B. Log2 transformation",ylab="Log2")
+title(main="B. Orig + Log2 transformation",ylab="Log2")
 
 boxplot(Log2_pseudoCounts, las=2, col=as.matrix(Color), main="")
-title(main="C. Log2(x+1) (pseudoCounts)",ylab="pLog2")
+title(main="C. Orig + Log2(x+1) (pseudoCounts)",ylab="pLog2")
 
 boxplot(cpmCounts, las=2, col=as.matrix(Color), main="")
-title(main="D. cpm with log2 and 0=1",ylab="pLog2(cpm)")
+title(main="D. Orig + cpm with log2 and 0=1",ylab="pLog2(cpm)")
+
+boxplot(cpmCounts2, las=2, col=as.matrix(Color), main="")
+title(main="E. Norm + cpm with log2 and 0=1",ylab="pLog2(cpm_norm)")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig2-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig2-1.png" style="display: block; margin: auto;" />
 
 As you can see on panel A, the most datapoints are sticked to the x bar
 due that the majority of genes having low count values. A way to “see
@@ -489,18 +546,19 @@ We can check the distribution of a specific sample using the *hist*
 function;
 
 ``` r
-par(mfrow=c(1,4))
-hist(dgList2$counts[,"t0.r2"],col="lightblue", main="A. Untransf data")
-hist(Log2[,"t0.r2"],col="lightblue", main="B. Log2 transf")
-hist(Log2_pseudoCounts[,"t0.r2"],col="lightblue", main="C. Log2_pseudoCounts")
-hist(cpmCounts[,"t0.r2"],col="lightblue", main="D. cpm+log2+pseudocounts")
+par(mfrow=c(1,5))
+hist(dgList2$counts[,"t0.r2"],col="lightblue", main="A. Untransf data", ylab="Number of genes")
+hist(Log2[,"t0.r2"],col="lightblue", main="B. Log2 transf", ylab="Number of genes")
+hist(Log2_pseudoCounts[,"t0.r2"],col="lightblue", main="C. Log2_pseudoCounts", ylab="Number of genes")
+hist(cpmCounts[,"t0.r2"],col="lightblue", main="D. cpm+log2+pseudocounts", ylab="Number of genes")
+hist(cpmCounts2[,"t0.r2"],col="lightblue", main="E. cpm_norm+log2+pseudocounts", ylab="Number of genes")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig3-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig3-1.png" style="display: block; margin: auto;" />
 
 Take a look at the peak at zero, which is lost on the Log2 graph.
 
-## 5\. Gene filtering
+## 5. Gene filtering
 
 How many genes are not expressed over all samples?
 
@@ -509,7 +567,7 @@ kable(table(rowSums(dgList2$counts==0)==30))
 ```
 
 | Var1  |  Freq |
-| :---- | ----: |
+|:------|------:|
 | FALSE | 29768 |
 | TRUE  |  3065 |
 
@@ -556,7 +614,7 @@ kable(head(countCheck))
 ```
 
 |           | t0.r1 | t0.r2 | t0.r3 | t5.r1 | t5.r2 | t5.r3 | t10.r1 | t10.r2 | t10.r3 | t15.r1 | t15.r2 | t15.r3 | t20.r1 | t20.r2 | t20.r3 | t30.r1 | t30.r2 | t30.r3 | t45.r1 | t45.r2 | t45.r3 | t60.r1 | t60.r2 | t60.r3 | t90.r1 | t90.r2 | t90.r3 | t120.r1 | t120.r2 | t120.r3 |
-| --------- | :---- | :---- | :---- | :---- | :---- | :---- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :----- | :------ | :------ | :------ |
+|:----------|:------|:------|:------|:------|:------|:------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:--------|:--------|:--------|
 | AT1G01010 | TRUE  | TRUE  | TRUE  | TRUE  | TRUE  | TRUE  | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE    | TRUE    | TRUE    |
 | AT1G01020 | TRUE  | TRUE  | TRUE  | TRUE  | TRUE  | TRUE  | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE   | TRUE    | TRUE    | TRUE    |
 | AT1G03987 | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE  | FALSE   | FALSE   | FALSE   |
@@ -607,7 +665,7 @@ Samples are colored by time as it is represented on the legend.
 
 ``` r
 nsamples <- ncol(dgList)
-lcpm.cutoff <- log2(1)
+lcpm.cutoff1 <- log2(1)
 ```
 
 ``` r
@@ -616,7 +674,7 @@ par(mfrow=c(1,2))
 z <- cpm(dgList, log=TRUE, prior.count=1)
 plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
 title(main="A. Raw data", xlab="Log-cpm")
-abline(v=lcpm.cutoff, lty=3)
+abline(v=lcpm.cutoff1, lty=3)
 for (i in 2:nsamples){
   den <- density(z[,i])
   lines(den$x, den$y, col=Color[i], lwd=2)
@@ -625,8 +683,8 @@ legend("topright", title="time", unique(as.character(dgList$metadata$Time)), tex
 
 z <- cpm(dgList3, log=TRUE, prior.count=1)
 plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
-title(main="B. Filtered data", xlab="Log-cpm")
-abline(v=lcpm.cutoff, lty=3)
+title(main="B. Filtered data (manual)", xlab="Log-cpm")
+abline(v=lcpm.cutoff1, lty=3)
 for (i in 2:nsamples){
   den <- density(z[,i])
   lines(den$x, den$y, col=Color[i], lwd=2)
@@ -634,7 +692,7 @@ for (i in 2:nsamples){
 legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig4-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig4-1.png" style="display: block; margin: auto;" />
 
 ### 5.2. EdgeR cutoff
 
@@ -691,16 +749,38 @@ keeps genes that have a CPM of 0.3 or more in at least three samples.
 ``` r
 L <- mean(dgList$samples$lib.size) * 1e-6 # = 42 million reads
 M <- median(dgList$samples$lib.size) * 1e-6 # = 35 million reads
-lcpm.cutoff <- log2(10/M + 2/L) # cutoff used by filterByExpr function
+lcpm.cutoff2 <- log2(10/M + 2/L) # cutoff used by filterByExpr function
 ```
 
 ``` r
-par(mfrow=c(1,2)) 
+par(mfrow=c(2,2)) 
 
 z <- cpm(dgList, log=TRUE, prior.count=1)
 plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
 title(main="A. Raw data", xlab="Log-cpm")
-abline(v=lcpm.cutoff, lty=3)
+abline(v=lcpm.cutoff1, lty=3)
+for (i in 2:nsamples){
+  den <- density(z[,i])
+  lines(den$x, den$y, col=Color[i], lwd=2)
+}
+legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
+
+z <- cpm(dgList3, log=TRUE, prior.count=1)
+plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="B. Filtered data (manual)", xlab="Log-cpm")
+abline(v=lcpm.cutoff1, lty=3)
+for (i in 2:nsamples){
+  den <- density(z[,i])
+  lines(den$x, den$y, col=Color[i], lwd=2)
+}
+legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
+
+#---
+
+z <- cpm(dgList, log=TRUE, prior.count=1)
+plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="C. Raw data", xlab="Log-cpm")
+abline(v=lcpm.cutoff2, lty=3)
 for (i in 2:nsamples){
   den <- density(z[,i])
   lines(den$x, den$y, col=Color[i], lwd=2)
@@ -709,8 +789,8 @@ legend("topright", title="time", unique(as.character(dgList$metadata$Time)), tex
 
 z <- cpm(dgList4, log=TRUE, prior.count=1)
 plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
-title(main="B. Filtered data", xlab="Log-cpm")
-abline(v=lcpm.cutoff, lty=3)
+title(main="D. Filtered data (edgeR)", xlab="Log-cpm")
+abline(v=lcpm.cutoff2, lty=3)
 for (i in 2:nsamples){
   den <- density(z[,i])
   lines(den$x, den$y, col=Color[i], lwd=2)
@@ -718,16 +798,16 @@ for (i in 2:nsamples){
 legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig5-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig5-1.png" style="display: block; margin: auto;" />
 
-## 6\. Data Exploration
+## 6. Data Exploration
 
 ### 6.1. edgeR MDS
 
 We can examine inter-sample relationships by producing a plot based on
 multidimensional scaling. More details of this kind of exploration on
-Session3… this is just an example. When an object of type DGEList is the
-input of plotMDS function, the real called function is a modified
+Session 3… this is just an example. When an object of type DGEList is
+the input of plotMDS function, the real called function is a modified
 version designed by edgeR team with real name “plotMDS.DGEList”. It
 convert the counts to log-cpm and pass these to the limma plotMDS
 function. There, distance between each pair of samples (columns) is the
@@ -752,7 +832,7 @@ plotMDS(dgList3, prior.count=1, col=Color, labels=dgList$metadata$Time, xlab = "
 title(main="B. Setting colors and labels")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig6-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig6-1.png" style="display: block; margin: auto;" />
 
 On panel A you see the samples ordination in MDS space. Did you see time
 groups?
@@ -801,7 +881,7 @@ plot(TreeC,
      ylab = "Height")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig7-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig7-1.png" style="display: block; margin: auto;" />
 
 We can select a tree “level” to obtain clusters. For example, at eight
 0.06 we will obtain 3 clusters
@@ -814,7 +894,7 @@ plot(TreeC,
 abline(h=0.04, lwd=2, col="pink") # 0.05=2groups, 0.04=3groups, 0.03=4groups
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig8-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig8-1.png" style="display: block; margin: auto;" />
 
 This is the commmand to cut the tree and save clusters
 
@@ -881,7 +961,7 @@ The cluster plot:
 plot(pv,print.num=FALSE, col.pv=pvcolors, cex.pv=0.8, main=paste("Cluster dendogram with 'Approximately Unbiased' values (%), bootstrap=", bootstrap))
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig9-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig9-1.png" style="display: block; margin: auto;" />
 
 The cluster plot selecting groups according to a specific alpha value
 
@@ -890,7 +970,7 @@ plot(pv,print.num=FALSE, col.pv=pvcolors, cex.pv=0.8, main=paste("Cluster dendog
 pvrect(pv, alpha=0.90, pv="au", type="geq", max.only=TRUE)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig10-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig10-1.png" style="display: block; margin: auto;" />
 
 Graph explanation: Two types of values are provided for the confidence
 of the nodes: AU (Approximately Unbiased) values and BP (Bootstrap
@@ -1020,7 +1100,7 @@ Models and their score by component
 plot(fit$BIC) 
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig11-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig11-1.png" style="display: block; margin: auto;" />
 
 Classification vector that we could use on other plots, like PCA (next
 Sesion)
@@ -1072,7 +1152,7 @@ Before to plot the next figure, expand the RStudio plot panel.
 cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig12-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig12-1.png" style="display: block; margin: auto;" />
 
 What if we use cpm instead of pseudocount?
 
@@ -1085,7 +1165,7 @@ sampleDists <- as.matrix(cor(cpmCounts))
 cim(sampleDists, color = cimColor, symkey = FALSE, row.cex = 1.3, col.cex = 1.3)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig13-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig13-1.png" style="display: block; margin: auto;" />
 
 Note that sample clustering could be different when using pseudocounts
 or cpm. The correlation between samples is sensible to the kind of data
@@ -1094,7 +1174,7 @@ panel C and D of the first graph of data transformation section. Some
 people do prefer to use pseudocounts but the correct way is to use cpm
 (<https://www.biostars.org/p/165619/>).
 
-## 7\. Lineal model
+## 7. Lineal model
 
 Linear modelling in edgeR is carried out using the glmFit (GLM) and
 contrasts.fit functions originally written for application to
@@ -1133,7 +1213,7 @@ length(design.matrix[1,]) #10 factors
 
 Detail of factors and assigned samples: 30 rows for 30 samples. You can
 see a number “1” on the corresponding replicates of each sample. Note
-that **dgList3$samples$group0** is not present. As a time series, all
+that **dgList3\$samples\$group0** is not present. As a time series, all
 factors will be compared against time0.
 
 ``` r
@@ -1271,9 +1351,9 @@ design.matrix # factors
     ## [1] "contr.treatment"
 
 Another model option is to use **model.matrix(0\~ +
-dgList3$samples$group)**, but that’s not a time series analysis. That’s
-a matrix for paired comparisons (ie, control vs treatment) like will be
-used on next Session.
+dgList3\$samples\$group)**, but that’s not a time series analysis.
+That’s a matrix for paired comparisons (ie, control vs treatment) like
+will be used on next Session.
 
 A key strength of limma’s linear modelling approach, is the ability
 accommodate arbitrary experimental complexity. Simple designs, such cell
@@ -1314,7 +1394,7 @@ parameter in the negative binomial model.
 plotBCV(dgList3a)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig14-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig14-1.png" style="display: block; margin: auto;" />
 
 There is a function in EdgeR that merges the three previous commands
 but, the result is not the same therefore, we prefer the three step
@@ -1333,7 +1413,7 @@ plotBCV(dgList3b)
 title(main="B. one step")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig15-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig15-1.png" style="display: block; margin: auto;" />
 
 The trend is more realistic using “three steps” method. Finally, we
 choose to follow using that result
@@ -1379,13 +1459,13 @@ lrt <- glmLRT(fit,coef=6)
 head(lrt$table)
 ```
 
-    ##                logFC    logCPM         LR      PValue
-    ## AT1G01010 -0.2026954 4.3646484 1.19714677 0.273892693
-    ## AT1G01020  0.0339595 3.7150330 0.04185692 0.837892753
-    ## AT1G01030 -0.2237841 1.6000858 0.87071276 0.350758061
-    ## AT1G01040 -0.1780170 6.4567675 2.10480894 0.146836683
-    ## AT1G03993 -0.8292579 2.6110069 7.45770623 0.006316544
-    ## AT1G01046 -0.1014080 0.4601438 0.13504169 0.713260865
+    ##                 logFC   logCPM        LR      PValue
+    ## AT1G01010 -0.20269543 4.364648 1.1971494 0.273892175
+    ## AT1G01020  0.03395948 3.715033 0.0418573 0.837892034
+    ## AT1G01030 -0.22378394 1.600086 0.8706772 0.350767902
+    ## AT1G01040 -0.17801700 6.456768 2.1048363 0.146834058
+    ## AT1G03993 -0.82925789 2.611007 7.4577237 0.006316483
+    ## AT1G01046 -0.10140918 0.460144 0.1350681 0.713234064
 
 This result does not have FDR correction The following lines will add
 this correction using the function topTags
@@ -1397,12 +1477,12 @@ head(lrtFDR$table)
 ```
 
     ##               genes    logFC   logCPM       LR        PValue           FDR
-    ## AT3G49940 AT3G49940 7.728044 6.307248 647.1966 9.094910e-143 2.004791e-138
-    ## AT5G40850 AT5G40850 5.227322 9.356019 463.4374 8.587392e-103  9.464594e-99
-    ## AT4G37540 AT4G37540 8.859143 3.832665 425.8077  1.328463e-94  9.761103e-91
-    ## AT5G63160 AT5G63160 4.450219 4.399648 424.1120  3.107669e-94  1.712559e-90
-    ## AT5G67420 AT5G67420 6.640411 7.654433 395.7192  4.707948e-88  2.075546e-84
-    ## AT1G68670 AT1G68670 5.142652 4.610942 390.7073  5.806269e-87  2.133126e-83
+    ## AT3G49940 AT3G49940 7.728044 6.307248 647.1987 9.085399e-143 2.002695e-138
+    ## AT5G40850 AT5G40850 5.227322 9.356018 463.3982 8.757614e-103  9.652204e-99
+    ## AT4G37540 AT4G37540 8.859143 3.832665 425.8107  1.326505e-94  9.746718e-91
+    ## AT5G63160 AT5G63160 4.450219 4.399648 424.1128  3.106399e-94  1.711859e-90
+    ## AT5G67420 AT5G67420 6.640411 7.654433 395.7232  4.698470e-88  2.071367e-84
+    ## AT1G68670 AT1G68670 5.142652 4.610942 390.7059  5.810373e-87  2.134634e-83
 
 Now we included FDR correction :)
 
@@ -1446,7 +1526,7 @@ the design matrix and what they represent.
 10 3313 \# time 120
 
 Other options to choose are a mix of factors (times).  
-For example, from factor 2 to factor 10 (time 2 to time 120): This would
+For example, from factor 2 to factor 10 (time 5 to time 120): This would
 then ask the question, “Is there an effect of **time** on a given gene?”
 
 ``` r
@@ -1475,7 +1555,7 @@ plotSmear(lrt, de.tags = rownames(selectedLRT))
 abline(h=c(-1, 1), col=2)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig16-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig16-1.png" style="display: block; margin: auto;" />
 
 #### 7.3.2. Volcano plot of selected genes
 
@@ -1488,7 +1568,7 @@ abline(v=c(-1, 1), col=2)
 abline(h=-log10(0.05), col=2)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig17-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig17-1.png" style="display: block; margin: auto;" />
 
 #### 7.3.3. Heatmap of selected genes using cpm
 
@@ -1505,7 +1585,7 @@ finalHMr <- cim(t(cpmCounts.select), color = cimColor, symkey = FALSE, row.cex =
                col.cex = 0.7)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig19-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig19-1.png" style="display: block; margin: auto;" />
 
 Ploting a heatmap with “Samples as columns”
 
@@ -1514,7 +1594,7 @@ finalHMc <- cim(cpmCounts.select, color = cimColor, symkey = FALSE, row.cex = 0.
                col.cex = 1.5)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig20-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig20-1.png" style="display: block; margin: auto;" />
 
 #### 7.3.4. Some other heatmaps schemes
 
@@ -1524,7 +1604,7 @@ Default heatmap.2 output
 heatmap.2(cpmCounts.select)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig21-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig21-1.png" style="display: block; margin: auto;" />
 
 Scaling by genes (rows)… also known as z-score
 
@@ -1539,7 +1619,7 @@ heatmap.2(cpmCounts.select,scale="row", trace="none", cexRow = 0.8,
 )
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig22-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig22-1.png" style="display: block; margin: auto;" />
 
 Grouping samples by time with a distintive color
 
@@ -1550,7 +1630,7 @@ heatmap.2(cpmCounts.select,scale="row", trace="none", cexRow = 0.8,
 )
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig23-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig23-1.png" style="display: block; margin: auto;" />
 
 More options:
 
@@ -1579,7 +1659,7 @@ heatmap “finalHMr” (Section 7.3.3)
 plot(finalHMc$ddr, leaflab="none")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig24-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig24-1.png" style="display: block; margin: auto;" />
 
 The tree could be “cutted” at a desired level to obtain clusters. If we
 cut at 40%, we will produce 4 clusters
@@ -1589,7 +1669,7 @@ plot(finalHMc$ddr, leaflab="none")
 abline(h=40, lwd=2, col="pink")
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig25-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig25-1.png" style="display: block; margin: auto;" />
 
 This is the commmand to cut the tree at the desired level and save
 clusters:
@@ -1725,7 +1805,7 @@ p0 <- ggplot(dmolten, aes(time, value, col=variable)) +
 p0
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig26-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig26-1.png" style="display: block; margin: auto;" />
 
 We can select a specific cluster to draw the expression of their genes.
 I will select cluster1
@@ -1748,8 +1828,8 @@ core1 <- dmolten[dmolten$variable=="clust_1",]
 ```
 
 Now, to plot this gene expression we use the group=variable and change
-the geom\_line to grey. Then we add on top of expression the mean
-expression of the core in blue passing the the core data to geom\_line.
+the geom_line to grey. Then we add on top of expression the mean
+expression of the core in blue passing the the core data to geom_line.
 
 ``` r
 p1 <- ggplot(dClust1molten, aes(time, value, group=variable)) + 
@@ -1763,7 +1843,7 @@ p1 <- ggplot(dClust1molten, aes(time, value, group=variable)) +
 p1
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig27-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig27-1.png" style="display: block; margin: auto;" />
 
 **All clusters**
 
@@ -1815,7 +1895,7 @@ grid.arrange(p0 + theme(legend.position = "none"),
              ncol=5)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig28-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig28-1.png" style="display: block; margin: auto;" />
 
 Cool, but each graph have their own scale and they are not sorted. Look
 for the max and min axes value through the graphs to set global values.
@@ -1826,7 +1906,7 @@ ylim1=-5; ylim2=17
 ```
 
 Finally, sort the command lines of expression plots according to p0
-order and plot\!
+order and plot!
 
 ``` r
 # Expand the RStudio plot panel before the plot
@@ -1838,7 +1918,7 @@ grid.arrange(p0 + ylim(ylim1, ylim2) + theme(legend.position = "none"),
              ncol=5)
 ```
 
-<img src="3_Pipeline-Gene_expression_analysis_files/figure-gfm/fig29-1.png" style="display: block; margin: auto;" />
+<img src="1_Pipeline-Gene_expression_analysis_files/figure-gfm/fig29-1.png" style="display: block; margin: auto;" />
 
 #### 7.4.3. Saving results
 
@@ -1856,46 +1936,51 @@ write.table(names(which(geneClust == 2)), "factor6.clust2.txt", sep="\t", quote 
 write.table(names(geneClust), "factor6.all.txt", sep="\t", quote = FALSE, row.names = F, col.names = F)
 ```
 
-## 8\. Session info (and data saving)
+## 8. Session info (and data saving)
 
 ``` r
 sessionInfo()
 ```
 
-    ## R version 3.6.3 (2020-02-29)
+    ## R version 4.2.0 (2022-04-22 ucrt)
     ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-    ## Running under: Windows 10 x64 (build 18363)
+    ## Running under: Windows 10 x64 (build 19045)
     ## 
     ## Matrix products: default
     ## 
     ## locale:
-    ## [1] LC_COLLATE=Spanish_Chile.1252  LC_CTYPE=Spanish_Chile.1252   
-    ## [3] LC_MONETARY=Spanish_Chile.1252 LC_NUMERIC=C                  
-    ## [5] LC_TIME=Spanish_Chile.1252    
+    ## [1] LC_COLLATE=Spanish_Chile.utf8  LC_CTYPE=Spanish_Chile.utf8   
+    ## [3] LC_MONETARY=Spanish_Chile.utf8 LC_NUMERIC=C                  
+    ## [5] LC_TIME=Spanish_Chile.utf8    
     ## 
     ## attached base packages:
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] matrixStats_0.56.0 mclust_5.4.6       gplots_3.0.3       reshape2_1.4.4    
-    ##  [5] mixOmics_6.8.5     lattice_0.20-41    MASS_7.3-51.6      RColorBrewer_1.1-2
-    ##  [9] gridExtra_2.3      ggplot2_3.3.2      pvclust_2.2-0      dplyr_1.0.0       
-    ## [13] knitr_1.28         edgeR_3.26.8       limma_3.40.6      
+    ##  [1] matrixStats_0.62.0 mclust_6.0.0       gplots_3.1.3       reshape2_1.4.4    
+    ##  [5] mixOmics_6.20.0    lattice_0.20-45    MASS_7.3-60        RColorBrewer_1.1-3
+    ##  [9] gridExtra_2.3      ggplot2_3.4.2      pvclust_2.2-0      dplyr_1.1.2       
+    ## [13] knitr_1.42         edgeR_3.38.4       limma_3.52.2      
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtools_3.8.2       tidyselect_1.1.0   locfit_1.5-9.4     xfun_0.14         
-    ##  [5] purrr_0.3.4        splines_3.6.3      colorspace_1.4-1   vctrs_0.3.1       
-    ##  [9] generics_0.0.2     htmltools_0.4.0    yaml_2.2.1         rlang_0.4.6       
-    ## [13] pillar_1.4.4       glue_1.4.1         withr_2.2.0        lifecycle_0.2.0   
-    ## [17] plyr_1.8.6         stringr_1.4.0      munsell_0.5.0      gtable_0.3.0      
-    ## [21] caTools_1.18.0     evaluate_0.14      labeling_0.3       parallel_3.6.3    
-    ## [25] highr_0.8          rARPACK_0.11-0     Rcpp_1.0.4.6       KernSmooth_2.23-17
-    ## [29] corpcor_1.6.9      scales_1.1.1       gdata_2.18.0       farver_2.0.3      
-    ## [33] RSpectra_0.16-0    ellipse_0.4.2      digest_0.6.25      stringi_1.4.6     
-    ## [37] grid_3.6.3         tools_3.6.3        bitops_1.0-6       magrittr_1.5      
-    ## [41] tibble_3.0.1       crayon_1.3.4       tidyr_1.1.0        pkgconfig_2.0.3   
-    ## [45] ellipsis_0.3.1     Matrix_1.2-18      rmarkdown_2.3      R6_2.4.1          
-    ## [49] igraph_1.2.5       compiler_3.6.3
+    ##  [1] ggrepel_0.9.3       Rcpp_1.0.9          locfit_1.5-9.6     
+    ##  [4] tidyr_1.2.0         corpcor_1.6.10      gtools_3.9.3       
+    ##  [7] digest_0.6.29       utf8_1.2.2          RSpectra_0.16-1    
+    ## [10] R6_2.5.1            plyr_1.8.8          ellipse_0.4.5      
+    ## [13] evaluate_0.21       highr_0.10          pillar_1.9.0       
+    ## [16] rlang_1.1.1         Matrix_1.5-4        rmarkdown_2.21     
+    ## [19] labeling_0.4.2      splines_4.2.0       rARPACK_0.11-0     
+    ## [22] BiocParallel_1.30.3 stringr_1.5.0       igraph_1.4.2       
+    ## [25] munsell_0.5.0       compiler_4.2.0      xfun_0.39          
+    ## [28] pkgconfig_2.0.3     htmltools_0.5.3     tidyselect_1.2.0   
+    ## [31] tibble_3.2.1        codetools_0.2-19    fansi_1.0.3        
+    ## [34] withr_2.5.0         bitops_1.0-7        grid_4.2.0         
+    ## [37] gtable_0.3.3        lifecycle_1.0.3     magrittr_2.0.3     
+    ## [40] scales_1.2.1        KernSmooth_2.23-21  cli_3.6.1          
+    ## [43] stringi_1.7.8       farver_2.1.1        generics_0.1.3     
+    ## [46] vctrs_0.6.2         tools_4.2.0         glue_1.6.2         
+    ## [49] purrr_0.3.4         parallel_4.2.0      fastmap_1.1.0      
+    ## [52] yaml_2.3.5          colorspace_2.0-3    caTools_1.18.2
 
 ``` r
 #save.image(file = "3_Pipeline-Gene_expression_analysis.RData")

@@ -1,13 +1,13 @@
 ---
 title: "Session 2 | Gene expression analysis"
 author: "Jonathan Maldonado"
-date: "06/03/2020"
+date: "13/07/2023"
 output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "~/iBio/workshop2020-iBio/S1/")
+knitr::opts_knit$set(root.dir = "C:/tmp/S2")
 ```
 
 Following the former pipeline, we were able to obtain a table with read counts per gene of Arabidopsis. That table was generated using the reduced version of the original sequencing files. For this pipeline, we will use a similar file, containing gene counts obtained from the analysis of the original .fastq files.
@@ -33,7 +33,7 @@ library(matrixStats)
 Don't forget to set the working directory right were your downloaded files are. If you have previous RData file (from a previous session), use the *load* command to load the session.
 
 ```{r}
-setwd("~/iBio/workshop2020-iBio/S1")
+setwd("C:/tmp/S2")
 #load("3_Pipeline-Gene_expression_analysis.RData")
 ```
 
@@ -173,22 +173,27 @@ Plot the following boxplots:
 
 ```{r fig2, fig.align="center", dpi=350, fig.height=4, fig.width=12, warning=FALSE}
 
-par(mfrow=c(1,4)) #Figure2
+par(mfrow=c(1,5)) #Figure2
 boxplot(dgList$counts, las=2, col=as.matrix(Color), main="")
-title(main="A. Untransformed data",ylab="original data")
+title(main="A. Original data",ylab="original data")
 
-Log2 <- log2(dgList2$counts)
-Log2_pseudoCounts <- log2(dgList2$counts+1)
-cpmCounts <- cpm(dgList2, log=TRUE, prior.count = 1)
+Log2 <- log2(dgList$counts)
+Log2_pseudoCounts <- log2(dgList$counts+1)
+cpmCounts <- cpm(dgList, log=TRUE, prior.count = 1)
+cpmCounts2 <- cpm(dgList2, log=TRUE, prior.count = 1)
 
 boxplot(Log2, las=2, col=as.matrix(Color), main="")
-title(main="B. Log2 transformation",ylab="Log2")
+title(main="B. Orig + Log2 transformation",ylab="Log2")
 
 boxplot(Log2_pseudoCounts, las=2, col=as.matrix(Color), main="")
-title(main="C. Log2(x+1) (pseudoCounts)",ylab="pLog2")
+title(main="C. Orig + Log2(x+1) (pseudoCounts)",ylab="pLog2")
 
 boxplot(cpmCounts, las=2, col=as.matrix(Color), main="")
-title(main="D. cpm with log2 and 0=1",ylab="pLog2(cpm)")
+title(main="D. Orig + cpm with log2 and 0=1",ylab="pLog2(cpm)")
+
+boxplot(cpmCounts2, las=2, col=as.matrix(Color), main="")
+title(main="E. Norm + cpm with log2 and 0=1",ylab="pLog2(cpm_norm)")
+
 ```
 
 As you can see on panel A, the most datapoints are sticked to the x bar due that the majority of genes having low count values. A way to "see all the datapoints" is to apply a data transformation. In panel B, a log2 transformation was applied. However, since log2 function can't deal with "zero" counts, those samples are lost in the graph. This is not a problem in a boxplot representation but could be a problem for scatter plots or density plots.
@@ -200,11 +205,12 @@ Panel D shows cpm transformation, which is another kind of data manipulation, wh
 We can check the distribution of a specific sample using the *hist* function;
 
 ```{r fig3, fig.align="center", dpi=300, fig.height=4, fig.width=12}
-par(mfrow=c(1,4))
-hist(dgList2$counts[,"t0.r2"],col="lightblue", main="A. Untransf data")
-hist(Log2[,"t0.r2"],col="lightblue", main="B. Log2 transf")
-hist(Log2_pseudoCounts[,"t0.r2"],col="lightblue", main="C. Log2_pseudoCounts")
-hist(cpmCounts[,"t0.r2"],col="lightblue", main="D. cpm+log2+pseudocounts")
+par(mfrow=c(1,5))
+hist(dgList2$counts[,"t0.r2"],col="lightblue", main="A. Untransf data", ylab="Number of genes")
+hist(Log2[,"t0.r2"],col="lightblue", main="B. Log2 transf", ylab="Number of genes")
+hist(Log2_pseudoCounts[,"t0.r2"],col="lightblue", main="C. Log2_pseudoCounts", ylab="Number of genes")
+hist(cpmCounts[,"t0.r2"],col="lightblue", main="D. cpm+log2+pseudocounts", ylab="Number of genes")
+hist(cpmCounts2[,"t0.r2"],col="lightblue", main="E. cpm_norm+log2+pseudocounts", ylab="Number of genes")
 ```
 
 Take a look at the peak at zero, which is lost on the Log2 graph.
@@ -273,16 +279,16 @@ Dotted vertical lines mark the log-CPM threshold that we use (cpm >1). Samples a
 
 ```{r}
 nsamples <- ncol(dgList)
-lcpm.cutoff <- log2(1)
+lcpm.cutoff1 <- log2(1)
 ```
 
-```{r fig4, fig.align="center", dpi=300, fig.height=6, fig.width=12}
+```{r fig4, fig.align="center", dpi=300, fig.height=5, fig.width=12}
 par(mfrow=c(1,2))
 
 z <- cpm(dgList, log=TRUE, prior.count=1)
 plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
 title(main="A. Raw data", xlab="Log-cpm")
-abline(v=lcpm.cutoff, lty=3)
+abline(v=lcpm.cutoff1, lty=3)
 for (i in 2:nsamples){
   den <- density(z[,i])
   lines(den$x, den$y, col=Color[i], lwd=2)
@@ -291,8 +297,8 @@ legend("topright", title="time", unique(as.character(dgList$metadata$Time)), tex
 
 z <- cpm(dgList3, log=TRUE, prior.count=1)
 plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
-title(main="B. Filtered data", xlab="Log-cpm")
-abline(v=lcpm.cutoff, lty=3)
+title(main="B. Filtered data (manual)", xlab="Log-cpm")
+abline(v=lcpm.cutoff1, lty=3)
 for (i in 2:nsamples){
   den <- density(z[,i])
   lines(den$x, den$y, col=Color[i], lwd=2)
@@ -330,16 +336,38 @@ Now, let's compare all samples pre and post filtering with a density plot. The f
 ```{r}
 L <- mean(dgList$samples$lib.size) * 1e-6 # = 42 million reads
 M <- median(dgList$samples$lib.size) * 1e-6 # = 35 million reads
-lcpm.cutoff <- log2(10/M + 2/L) # cutoff used by filterByExpr function
+lcpm.cutoff2 <- log2(10/M + 2/L) # cutoff used by filterByExpr function
 ```
 
-```{r fig5, fig.align="center", dpi=300, fig.height=6, fig.width=12}
-par(mfrow=c(1,2)) 
+```{r fig5, fig.align="center", dpi=300, fig.height=8, fig.width=12}
+par(mfrow=c(2,2)) 
 
 z <- cpm(dgList, log=TRUE, prior.count=1)
 plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
 title(main="A. Raw data", xlab="Log-cpm")
-abline(v=lcpm.cutoff, lty=3)
+abline(v=lcpm.cutoff1, lty=3)
+for (i in 2:nsamples){
+  den <- density(z[,i])
+  lines(den$x, den$y, col=Color[i], lwd=2)
+}
+legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
+
+z <- cpm(dgList3, log=TRUE, prior.count=1)
+plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="B. Filtered data (manual)", xlab="Log-cpm")
+abline(v=lcpm.cutoff1, lty=3)
+for (i in 2:nsamples){
+  den <- density(z[,i])
+  lines(den$x, den$y, col=Color[i], lwd=2)
+}
+legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
+
+#---
+
+z <- cpm(dgList, log=TRUE, prior.count=1)
+plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
+title(main="C. Raw data", xlab="Log-cpm")
+abline(v=lcpm.cutoff2, lty=3)
 for (i in 2:nsamples){
   den <- density(z[,i])
   lines(den$x, den$y, col=Color[i], lwd=2)
@@ -348,13 +376,14 @@ legend("topright", title="time", unique(as.character(dgList$metadata$Time)), tex
 
 z <- cpm(dgList4, log=TRUE, prior.count=1)
 plot(density(z[,1]), col=Color, lwd=2, ylim=c(0,0.26), las=2, main="", xlab="")
-title(main="B. Filtered data", xlab="Log-cpm")
-abline(v=lcpm.cutoff, lty=3)
+title(main="D. Filtered data (edgeR)", xlab="Log-cpm")
+abline(v=lcpm.cutoff2, lty=3)
 for (i in 2:nsamples){
   den <- density(z[,i])
   lines(den$x, den$y, col=Color[i], lwd=2)
 }
 legend("topright", title="time", unique(as.character(dgList$metadata$Time)), text.col=unique(Color), bty="n")
+
 ```
 
 ## 6. Data Exploration
@@ -744,7 +773,7 @@ The following are the number of genes calculated for each coeficient of the desi
 10 3313 # time 120
 
 Other options to choose are a mix of factors (times).  
-For example, from factor 2 to factor 10 (time 2 to time 120):
+For example, from factor 2 to factor 10 (time 5 to time 120):
 This would then ask the question, "Is there an effect of **time** on a given gene?"
 
 ```{r}

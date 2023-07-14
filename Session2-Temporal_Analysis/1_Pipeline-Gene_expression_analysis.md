@@ -16,70 +16,19 @@ BiocManager::install(“packagename”).
 
 ``` r
 library(edgeR)
-```
-
-    ## Warning: package 'edgeR' was built under R version 4.2.1
-
-``` r
 library(knitr)
-```
-
-    ## Warning: package 'knitr' was built under R version 4.2.3
-
-``` r
 library(dplyr)
-```
-
-    ## Warning: package 'dplyr' was built under R version 4.2.3
-
-``` r
 library(pvclust)
-```
-
-    ## Warning: package 'pvclust' was built under R version 4.2.1
-
-``` r
 library(ggplot2)
-```
-
-    ## Warning: package 'ggplot2' was built under R version 4.2.3
-
-``` r
 require(gridExtra)
-```
-
-    ## Warning: package 'gridExtra' was built under R version 4.2.1
-
-``` r
 library(RColorBrewer)
 library(mixOmics)
-```
-
-    ## Warning: package 'MASS' was built under R version 4.2.3
-
-``` r
 library(reshape2)
-```
-
-    ## Warning: package 'reshape2' was built under R version 4.2.1
-
-``` r
 library(gplots)
-```
-
-    ## Warning: package 'gplots' was built under R version 4.2.1
-
-``` r
 library(mclust)
-```
-
-    ## Warning: package 'mclust' was built under R version 4.2.3
-
-``` r
 library(matrixStats)
 ```
 
-    ## Warning: package 'matrixStats' was built under R version 4.2.1
 
 Don’t forget to set the working directory right were your downloaded
 files are. If you have previous RData file (from a previous session),

@@ -88,7 +88,7 @@ Now, let's create a Conda environment and call it 'env1'. In the same command, w
 - Install **fastqc**, which will allow us to check reads quality.
 - Different **mapping** y **quantifying** programs (in this case, we picked 'Hisat2' for mapping).
 #
-    conda create -n env1 -c conda-forge -c bioconda fastqc hisat2 samtools
+    conda create -n env1 -c conda-forge -c bioconda openjdk fastqc hisat2 samtools
 
 **In addition**, if you wish, you can also install and compare other "mapping" tools (this will take more time and use more space in your computer):
 

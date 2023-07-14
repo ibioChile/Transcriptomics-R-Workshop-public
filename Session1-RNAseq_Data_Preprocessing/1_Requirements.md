@@ -10,7 +10,7 @@ More info about how to use **Unix Shell** (command line) [can be found here](htt
 
 ### **Watch [this video](https://drive.google.com/file/d/1GZbBg3DW284LVvTSucif0fhKskjvMr4X/view?usp=sharing) for a more detailed explanation of the following steps**
 
-## 1. Programs download and instalation
+## 1. Programs: download and installation
 
 In a bash terminal, create a working folder where you will store documents and files used during this session.
 

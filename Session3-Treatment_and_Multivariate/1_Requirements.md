@@ -157,7 +157,13 @@ Following the **Data Preprocessing** tutorial from Session 1, we generated a cou
 
 The associated metadata can be found [here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session3-Treatment_and_Multivariate/Data/metadata_session2-2.txt).
 
-### Install ViSEAGO in R versions = 3.6.1 (or any incompatible version)
+### How to install ViSEAGO in R version = 3.6.1 or any incompatible version.
+
+The "normal" way to install the package ViSEAGO is:
+
+    BiocManager::install("ViSEAGO")
+
+Just in case of problems during ViSEAGO installing process you could try the following procedure.
 
 In your terminal, clone ViSEAGO repository:
 

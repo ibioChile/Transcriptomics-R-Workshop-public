@@ -12,7 +12,7 @@ The second part of the workshop will focus on our RNAseq data analysis course. D
 <ins>Of course, some questions can not wait until friday so, you are invited anytime to ask directly by email.</ins>  
  
 ## Instructors:
-- [Jonathan Maldonado, PhD (USACH)](https://www.maldonadolab.com)
+- [Jonathan Maldonado, PhD (USACH)](https://maldonadolab.com)
 - [Nate Johnson, PhD (UMAYOR)](https://www.researchgate.net/profile/Nathan-Johnson-4)
 - [Pablo Villarreal, PhD (USACH)](https://www.researchgate.net/profile/Pablo-Villarreal-3)
 - [Tomás Moyano, PhD (UC)](https://www.researchgate.net/profile/Tomas-Moyano-Yugovic)

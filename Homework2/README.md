@@ -141,8 +141,13 @@ In R, we can use the dist() function for the first step and hclust() for the sec
 > Use a scaled version of int_DEG_sig_exp to calculate cores.
 
 4.5	Create a molten table of cores and Sample Names. Follow similar steps to the ones shown in Session 2, 7.4.2.
-> Instead of time use Sample_Name.
+> Instead of Time use Sample_Name.
+> 
+> The variable "Time" is a number but the variable Sample_Name is a character so, the dmolten data table must be adjusted with this command to be sure that expression values are used as "numbers".   
+> ```dmolten$value <- as.numeric(dmolten$value)```
+> 
 > Before plotting, sort your samples order with this code: ```dmolten$Sample_Name <- factor(dmolten$Sample_Name ,levels = dgList_TMM$metadata$Sample_Name)```
+> 
 
 4.6	Make a ```geom_tile``` plot with the mean expression of each core (cluster vs. Sample Name). Fill tiles by expression. This will create a heatmap where every row represents the mean expression of each cluster across samples. 
 > If ```geom_tile``` don't work in your R session, try loading the library ```farver```.

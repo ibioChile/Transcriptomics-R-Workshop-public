@@ -1728,7 +1728,7 @@ head(cores)
 Now, we prepare the data frame
 
 ``` r
-d <- cbind(dgList$metadata$Time,data.frame(cores))
+d <- data.frame(cbind(dgList$metadata$Time,data.frame(cores)))
 #names <- rownames(d)
 #rownames(d) <- NULL
 #d <- cbind(names,d)

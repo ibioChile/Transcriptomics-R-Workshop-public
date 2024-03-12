@@ -102,6 +102,22 @@ The HiSat2 program requires an index file for every genome in order to do the ma
 
 ### 2.2 HiSat2: mapping
 
+At this point, we have two ways to proceed with the sequence mapping process:
+
+#### Option 1) To run a set of commands for each pair of sequence files
+
+The "standard" command is as follows using the first trimmed sequence pairs as example:
+
+    hisat2 -p 8 --dta -x databases/Athaliana -1 SRR5440784_1M_trimmed_1P.fastq.gz -2 SRR5440784_1M_trimmed_2P.fastq.gz -S mapping/SRR5440784_1M_trimmed_Athaliana.sam 2> mapping/SRR5440784_1M_trimmed.align.stat.txt
+    samtools sort -@ 8 -o mapping/SRR5440784_1M_trimmed_Athaliana.bam mapping/SRR5440784_1M_trimmed_Athaliana.sam
+    rm mapping/SRR5440784_1M_trimmed_Athaliana.sam
+
+> The modifier **-p** indicates the number of processors to be used by the program... don't forget to review this parameter before saving the file.
+
+So, if you want, you can copy and paste 30 times these three commands, **replacing the names of the files with the names of the fastq.gz files** and **replacing the baseout statement by the corresponding one**.
+
+#### Option 2) To write a bash script to process all files
+
 We will write an script with the command below to align each set of reads from shoot tissues to the genome of Arabidopsis. HiSat2 generates a SAM file with mapped reads, Sequence Alignment/Map (SAM) format is a generic alignment text file that describes the genome coordinates were the reads were aligned, the number of possible match sites in the genome and other related information. Before we move to next step, we need to convert output SAM files to sorted BAM files. Therefore, we add an extra line to our script where we use Samtools to convert SAM to BAM files.
 
     nano doHisat2.sh

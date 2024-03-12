@@ -44,7 +44,19 @@ For this step, we will use the program Trimmomatic. First, we copy a file contai
 
     cp ~/test1/Downloads/Trimmomatic-0.39/adapters/TruSeq3-PE.fa .
 
-Then, we create a file containing the script to run Trimmomatic on each read file. You can use **nano** editor to create this file:
+At this point, have two ways to proceed with the adapter trimming process:
+
+#### Option 1) To run one Trimmomatic command for each file
+
+The "standard" command is as follows using the first sequence pairs as example:
+
+java -jar ~/test1/Downloads/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 8 **SRR5440784_1_1M.fastq.gz SRR5440784_2_1M.fastq.gz** -baseout trimmed/**SRR5440784**_1M_trimmed.fastq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:20 TRAILING:20 SLIDINGWINDOW:10:30 MINLEN:50 AVGQUAL:25;
+
+So, if you want, you can copy and paste 30 times that command, replacing the names of the files with the names of the fastq.gz files and replacing the baseout statement by the corresponding one.
+
+#### Option 2) To write a bash script to process all files
+
+We create a file containing a script to automatically run Trimmomatic on each read file pair. You can use **nano** editor to create this file:
 
     nano doTrimming.sh
 

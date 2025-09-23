@@ -1,9 +1,9 @@
 # Session 1 | RNA-Seq data preprocessing
 
-Before starting with these intructions, please watch this video: [Session1-RNAseq_Introduction](https://drive.google.com/file/d/1ogZf5UNYp2iL3x4-b3RRnU5Vmk7qJVBQ/view). 
+Before starting with these intructions, please watch this video: [Session1-RNAseq_Introduction](https://drive.google.com/file/d/1hwBCiEU1yY24hkU0DPqCd7wPtUZ4rKWl/view). 
 Also, don't forget to read and follow the [Requirements](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Session1-RNAseq_Data_Preprocessing/1_Requirements.md) section.
 
-### **Watch [this video](https://drive.google.com/file/d/104scpjSD8ZeEIcqTHo0JNqueY5RGxJdH/view) for a more detailed explanation of the following pipeline**
+### **Watch [this video](https://drive.google.com/file/d/1d6H_L1q4TBgaZauqrVryQnorjKGlooSy/view) for a more detailed explanation of the following pipeline**
 
 We must activate the conda **env1** environment that we prepared with the Requirements instructions. This way, all required programs and packages will be accessible for the following pipeline.
 

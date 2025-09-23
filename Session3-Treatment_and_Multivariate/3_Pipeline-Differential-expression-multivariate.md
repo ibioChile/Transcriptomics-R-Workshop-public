@@ -3,7 +3,7 @@ Session 3 | Part 2 : Gene expression analysis, multivariate experiments
 Pamela Camejo
 5/15/2020
 
-### **Watch [this video](https://drive.google.com/file/d/1MT_04vC4c23LWJKTjEdTVf7cYj1YPdZf/view?usp=sharing) for a more detailed explanation of the following pipeline**
+### **Watch [this video](https://drive.google.com/file/d/1e1HDYH6Pw-3AG3uy4xBLURAeE8JuGzcH/view?usp=sharing/view) for a more detailed explanation of the following pipeline**
 
 During this session, we will discover genes differentially expressed in
 the genome of Arabidopsis when considering time, treatment and tissue,

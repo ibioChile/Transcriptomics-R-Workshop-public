@@ -9,7 +9,7 @@ output: rmarkdown::github_document
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = "/Users/pamelacamejo/Documents/IBIO/R workshop/Session2/Pipeline 2/")
 ```
-### **Watch [this video](https://drive.google.com/file/d/1MT_04vC4c23LWJKTjEdTVf7cYj1YPdZf/view?usp=sharing) for a more detailed explanation of the following pipeline**
+### **Watch [this video](https://drive.google.com/file/d/1e1HDYH6Pw-3AG3uy4xBLURAeE8JuGzcH/view) for a more detailed explanation of the following pipeline**
 
 During this session, we will discover genes differentially expressed in the genome of Arabidopsis when considering time, treatment and tissue, as well as the interaction of these factors.
 

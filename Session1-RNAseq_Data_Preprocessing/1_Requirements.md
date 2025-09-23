@@ -1,6 +1,6 @@
 # Session 1 | Requirements
 
-Before starting with these intructions, please watch this video: [Session1-RNAseq_Introduction](https://drive.google.com/file/d/1hwBCiEU1yY24hkU0DPqCd7wPtUZ4rKWl).
+Before starting with these intructions, please watch this video: [Session1-RNAseq_Introduction](https://drive.google.com/file/d/1hwBCiEU1yY24hkU0DPqCd7wPtUZ4rKWl/view).
 
 For this session you will need a **Unix compatible system**, ie. MAC or Linux operating system to work with **Unix Shell** (terminal/command line). Windows10 users can activate the Windows Subsystem for Linux feature to enable instalation of Ubuntu inside Windows10.
 
@@ -8,7 +8,7 @@ Please read the [Workshop Setup](https://github.com/ibioChile/Transcriptomics-R-
 
 More info about how to use **Unix Shell** (command line) [can be found here](https://github.com/ibioChile/Transcriptomics-R-Workshop-public/blob/master/Command%20line.md).
 
-### **Watch [this video](https://drive.google.com/file/d/1FC55kGZogMQxMFbSPLJPOmBiBpV7E0sp) for a more detailed explanation of the following steps**
+### **Watch [this video](https://drive.google.com/file/d/1FC55kGZogMQxMFbSPLJPOmBiBpV7E0sp/view) for a more detailed explanation of the following steps**
 
 ## 1. Programs: download and installation
 
